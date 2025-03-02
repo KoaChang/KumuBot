@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>KumuChat</title>
+    <meta charset="UTF-8">
+    <title>Kumubot Chatbot</title>
+    <!-- Add the marked.js library for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="chatbody">
-  <div class="chatcontainer">
-    <h2 id="chath1">KumuChat</h2>
-    <div id="chatmessage-container" class="chatmessages"></div>
-    <div class="chatinput-container">
-      <div class="chatinput-wrapper">
-        <textarea id="chatuser-input" placeholder="Enter your message here"></textarea>
-      </div>
-      <div class="chatcheckbox-wrapper">
-        <input type="checkbox" id="chatenable-english-output">
-        <label for="chatenable-english-output">Enable KumuChat English Output</label>
-      </div>
-      <div class="chatbutton-wrapper">
-        <button id="chatsubmit-btn">Submit</button>
-      </div>
+<body>
+    <div class="kumuchat-wrapper">
+        <div class="kumuchat-container">
+            <div class="kumuchat-header">
+                <h2>KumuChat</h2>
+            </div>
+            
+            <div class="kumuchat-content">
+                <div id="kumuchat-message-container" class="kumuchat-message-container">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <div class="kumuchat-input-wrapper">
+                    <textarea id="kumuchat-user-input" class="kumuchat-user-input" placeholder="Type your message here..."></textarea>
+                    
+                    <div class="kumuchat-file-input-wrapper">
+                        <label for="kumuchat-image-input" class="kumuchat-file-input-label">Upload Image</label>
+                        <input type="file" id="kumuchat-image-input" accept="image/*" />
+                        <span id="kumuchat-file-name" class="kumuchat-file-name"></span>
+                    </div>
+                </div>
+                
+                <div class="kumuchat-checkbox-wrapper">
+                    <input type="checkbox" id="output-hawaiian" class="kumuchat-checkbox">
+                    <label for="output-hawaiian">Output Hawaiian</label>
+                </div>
+                
+                <button id="kumuchat-submit-btn" class="kumuchat-submit-btn">Submit</button>
+            </div>
+        </div>
     </div>
-  </div>
-  <script src="/static/script.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
