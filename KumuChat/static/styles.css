@@ -1,93 +1,124 @@
-.chatbody {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif; /* Change fonts to Sans Serif */
+/* Reset styles for consistency */
+* {
+  box-sizing: border-box !important;
 }
 
-.chatcontainer {
-  max-width: 800px;
-  margin: 0 auto;
-  border: 2px solid #ddd; /* Add a 2-pixel solid border with color #ddd */
-  padding: 20px; /* Add 20px of padding inside the border */
-  margin-top: 20px; /* Add 20px of margin outside the border */
-  box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+/* Color variables */
+:root {
+  --primary-color: #74a84a;
+  --primary-dark: #2c541d;
+  --bg-color: #f8f8f8;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
 }
 
-#chath1 {
-  text-align: center;
-}
-
-.chatmessages {
-  height:480px;
-  max-height: 4800px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 10px; /* Add padding to match the input text box width */
-  margin-bottom: 0; /* Remove margin to eliminate space between message container and input box */
-  background-color: #252526;
-  color: #fff;
-}
-
-.chatmessage {
-  margin-bottom: 8px;
-  padding: 8px;
-}
-
-.user-message {
-  background-color: #444654; /* Change user message background color */
-}
-
-.bot-message {
-  background-color: #202123; /* Change bot message background color */
-}
-
-.input-container {
-  display: flex;
-  flex-direction: column;
-  margin-top: 5px;
-}
-
-.chatinput-wrapper {
-  flex-grow: 1;
-  position: relative;
-}
-
-#chatuser-input {
+/* Chat UI Styling */
+.kumuchat-wrapper {
   width: 100%;
-  height: 40px; /* Adjust this value according to the desired initial height (2 lines) */
-  max-height: 200px; /* Adjust this value according to the desired maximum height */
-  padding: 10px;
-  font-size: 16px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
-  box-sizing: border-box; /* Include padding and border in the total height */
-  margin-top: 10px; /* Remove default margin */
-}
-
-.chatbutton-wrapper {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
-#chatsubmit-btn {
-  padding: 8px 16px;
-  background-color: #74a84a;
-  color: #fff;
+.kumuchat-container {
+  width: 100%;
+  max-width: 1400px;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+}
+
+.kumuchat-header {
+  padding: 0.7rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.kumuchat-header h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.kumuchat-content {
+  padding: 2rem;
+}
+
+.kumuchat-message-container {
+  height: 600px;
+  overflow-y: auto;
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+/* Message styles */
+.kumuchat-user-message {
+  background-color: #e9f5ff;
+  padding: 12px 15px;
+  border-radius: 12px 12px 2px 12px;
+  margin-left: 20%;
+}
+
+.kumuchat-assistant-message {
+  background-color: #f0f7eb;
+  padding: 12px 15px;
+  border-radius: 12px 12px 12px 2px;
+  margin-right: 20%;
+  border-left: 3px solid var(--primary-color);
+}
+
+/* Input styling */
+.kumuchat-user-input {
+  width: 100%;
+  min-height: 80px;
+  max-height: 150px;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: none;
+}
+
+/* Button styling */
+.kumuchat-submit-btn {
+  background-color: var(--primary-color);
+  color: white;
   border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  align-self: flex-end;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.chatcheckbox-wrapper {
-display: flex;
-align-items: center;
-margin-bottom: 10px;
+.kumuchat-submit-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
-.delete-icon {
-float: right;
-margin-left: 10px;
-cursor: pointer;
-color: red; /* Make the X red */
+/* Responsive */
+@media (max-width: 768px) {
+  .kumuchat-wrapper {
+      padding: 1rem;
+  }
+  .kumuchat-header, .kumuchat-content {
+      padding: 1.25rem;
+  }
+  .kumuchat-message-container {
+      height: 450px;
+  }
 }
