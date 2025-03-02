@@ -1,59 +1,46 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var inputText = document.getElementById('transinputText');
+    var outputText = document.getElementById('transoutputText');
+    var switchButton = document.getElementById('transswitch');
+    var translateButton = document.getElementById('translate');
 
-document.getElementById('transinputText').addEventListener('keyup', function(event) {
-if (event.keyCode === 13) {
-    event.preventDefault();
-    document.getElementById('translate').click();
-}
+    inputText.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            translateButton.click();
+        }
+    });
+
+    switchButton.addEventListener('click', function() {
+        let temp = inputText.placeholder;
+        inputText.placeholder = outputText.placeholder;
+        outputText.placeholder = temp;
+        [inputText.value, outputText.value] = [outputText.value, ""];
+    });
+
+    translateButton.addEventListener('click', function() {
+        if (!inputText.value.trim()) {
+            outputText.value = "Please enter text to translate.";
+            return;
+        }
+
+        translateButton.disabled = true;
+        translateButton.innerHTML = `Loading<span class="loading-dots"></span>`;
+
+        fetch("https://kumubot.pythonanywhere.com/translate", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: inputText.value, language: inputText.placeholder })
+        })
+        .then(response => response.json())
+        .then(data => {
+            translateButton.disabled = false;
+            translateButton.textContent = 'Translate';
+            outputText.value = data.translated_text;
+        })
+        .catch(() => {
+            translateButton.disabled = false;
+            outputText.value = "Translation error. Try again.";
+        });
+    });
 });
-
-document.getElementById('transswitch').addEventListener('click', function() {
-var inputText = document.getElementById('transinputText');
-var outputText = document.getElementById('transoutputText');
-
-if (inputText.placeholder === "Enter English text here...") {
-    inputText.placeholder = "Enter Hawaiian text here...";
-    outputText.placeholder = "Translated English text will appear here...";
-} else {
-    inputText.placeholder = "Enter English text here...";
-    outputText.placeholder = "Translated Hawaiian text will appear here...";
-}
-
-inputText.value = "";
-outputText.value = "";
-});
-
-document.getElementById('translate').addEventListener('click', function() {
-var inputText = document.getElementById('transinputText');
-var outputText = document.getElementById('transoutputText');
-var translateButton = document.getElementById('translate');
-
-var loadingText = 'Loading';
-var counter = 0;
-
-// Change the button text to "Loading..."
-var loadingInterval = setInterval(function() {
-    translateButton.textContent = loadingText + '.'.repeat(counter);
-    counter = (counter + 1) % 4;
-}, 500);
-
-fetch("https://kumubot.pythonanywhere.com/translate", {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        text: inputText.value,
-        language: inputText.placeholder
-    })
-})
-.then(response => response.json())
-.then(data => {
-    // Stop the loading animation and reset the button text
-    clearInterval(loadingInterval);
-    translateButton.textContent = 'Translate';
-
-    outputText.style.color = 'black';
-    outputText.value = data.translated_text;
-});
-});
-
