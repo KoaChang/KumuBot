@@ -1,0 +1,93 @@
+.chatbody {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif; /* Change fonts to Sans Serif */
+}
+
+.chatcontainer {
+  max-width: 800px;
+  margin: 0 auto;
+  border: 2px solid #ddd; /* Add a 2-pixel solid border with color #ddd */
+  padding: 20px; /* Add 20px of padding inside the border */
+  margin-top: 20px; /* Add 20px of margin outside the border */
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+}
+
+#chath1 {
+  text-align: center;
+}
+
+.chatmessages {
+  height:480px;
+  max-height: 4800px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px; /* Add padding to match the input text box width */
+  margin-bottom: 0; /* Remove margin to eliminate space between message container and input box */
+  background-color: #252526;
+  color: #fff;
+}
+
+.chatmessage {
+  margin-bottom: 8px;
+  padding: 8px;
+}
+
+.user-message {
+  background-color: #444654; /* Change user message background color */
+}
+
+.bot-message {
+  background-color: #202123; /* Change bot message background color */
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+}
+
+.chatinput-wrapper {
+  flex-grow: 1;
+  position: relative;
+}
+
+#chatuser-input {
+  width: 100%;
+  height: 40px; /* Adjust this value according to the desired initial height (2 lines) */
+  max-height: 200px; /* Adjust this value according to the desired maximum height */
+  padding: 10px;
+  font-size: 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  box-sizing: border-box; /* Include padding and border in the total height */
+  margin-top: 10px; /* Remove default margin */
+}
+
+.chatbutton-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#chatsubmit-btn {
+  padding: 8px 16px;
+  background-color: #74a84a;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.chatcheckbox-wrapper {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.delete-icon {
+float: right;
+margin-left: 10px;
+cursor: pointer;
+color: red; /* Make the X red */
+}
