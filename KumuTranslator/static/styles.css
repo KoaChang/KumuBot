@@ -1,0 +1,66 @@
+.transbody {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.transcontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.translator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+    background-color: white;
+    max-width: 600px;  /* Reduced to 75% of the previous value */
+    width: 100%;
+}
+
+.translator textarea {
+    width: 100%;
+    height: 150px;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+.transbutton-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.translator button {
+    background: #ccc;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 20px;
+}
+
+.translator button:hover {
+    background: #bbb;
+}
+
+#translate {
+    background: #74a84a;
+    color: white;
+}
+
+#translate:hover {
+    background: #2c541d;
+}
