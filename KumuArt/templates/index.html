@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KumuArt</title>
+</head>
+<body class="artbody">
+    <div class="artcontainer">
+        <h2>KumuArt</h2>
+        <textarea id="artdescription" placeholder="Enter a description of an image you want to generate."></textarea>
+        <button id="artsubmit-btn">Submit</button>
+        
+        <h3>Image Generated</h3>
+        <div id="artimage-container">
+            <p id="image-placeholder">This is where the image will show up</p>
+            <img id="artimage" style="display: none;"> <!-- The img tag is hidden initially -->
+        </div>
+        <p id="artoutput"></p>
+        
+        <h3>Fun Fact</h3>
+        <div id="artfact-container">
+            <p id="fact-placeholder">This is where the fun fact will show up</p>
+            <p id="artfact" style="display: none;"></p> <!-- The fun fact paragraph is hidden initially -->
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
