@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kumu Noʻeau</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kumu Noʻeau</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="noeau-wrapper">
-        <div class="noeau-container">
-            <div class="noeau-header">
-                <h2>Kumu Noʻeau</h2>
+  <div class="noeau-wrapper">
+    <div class="noeau-container">
+      <div class="noeau-header">
+        <h2>Kumu Noʻeau</h2>
+      </div>
+
+      <div class="noeau-content">
+        <form id="oleloForm">
+          <div class="input-area">
+            <div class="textarea-container">
+              <textarea id="noeauuserInput" placeholder="Enter a subject for KumuNoʻeau to write about" required></textarea>
             </div>
 
-            <div class="noeau-content">
-                <form id="oleloForm">
-                    <div class="input-area">
-                        <div class="textarea-container">
-                            <textarea id="noeauuserInput" placeholder="Enter a subject for KumuNoʻeau to write about" required></textarea>
-                        </div>
-
-                        <div class="checkbox-container">
-                            <div class="checkbox-wrapper">
-                                <input type="checkbox" id="generateCheckbox">
-                                <label for="generateCheckbox" class="checkbox-label">Generate new ʻŌlelo Noʻeau</label>
-                            </div>
-                        </div>
-                        <p id="checkboxDescription"></p>
-                    </div>
-
-                    <div class="response-area empty">
-                        <div class="response-label">Response:</div>
-                        <div id="noeauserverResponse"></div>
-                    </div>
-
-                    <div class="button-container">
-                        <button type="submit" id="noeausubmitButton">Submit</button>
-                    </div>
-                </form>
+            <div class="checkbox-container">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" id="generateCheckbox">
+                <label for="generateCheckbox" class="checkbox-label">Generate new ʻŌlelo Noʻeau</label>
+              </div>
             </div>
-        </div>
+            <p id="checkboxDescription"></p>
+          </div>
+
+          <div class="response-area empty">
+            <div class="response-label">Response:</div>
+            <div id="noeauserverResponse"></div>
+          </div>
+
+          <div class="button-container">
+            <button type="submit" id="noeausubmitButton">Submit</button>
+          </div>
+        </form>
+      </div>
     </div>
-    
-    <script src="script.js"></script>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
+

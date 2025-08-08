@@ -1,204 +1,208 @@
 /* Stronger wrapper to ensure centering */
 .noeau-wrapper {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    margin: 0 auto !important;
-    padding: 20px 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 auto !important;
+  padding: 20px 0 !important;
 }
 
-/* Reset some potential Elementor/WordPress styles */
+/* Reset some potential Elementor/Wordpress styles */
 .noeau-wrapper * {
-    box-sizing: border-box !important;
+  box-sizing: border-box !important;
 }
 
 :root {
-    --primary-color: #74a84a;
-    --primary-dark: #2c541d;
-    --bg-color: #f8f8f8;
-    --card-bg: #ffffff;
-    --text-color: #333333;
-    --border-color: #e0e0e0;
+  --primary-color: #74a84a;
+  --primary-dark: #2c541d;
+  --bg-color: #f8f8f8;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Remove body styles as they won't work in Elementor */
+/* Instead, these styles are applied to our wrapper div */
+
 .noeau-container {
-    width: 100% !important;
-    max-width: 800px !important;
-    background-color: var(--card-bg) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
-    overflow: hidden !important;
-    transition: all 0.3s ease !important;
-    margin: 0 auto !important;
+  width: 100% !important;
+  max-width: 800px !important;
+  background-color: var(--card-bg) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  margin: 0 auto !important;
 }
 
 .noeau-header {
-    padding: 1.5rem 2rem;
-    background-color: var(--primary-color);
-    color: white;
-    border-bottom: 1px solid var(--border-color);
-    text-align: left;
+  padding: 1.5rem 2rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
 }
 
 .noeau-header h2 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: white;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: white; /* Ensure text is white */
 }
 
 .noeau-content {
-    padding: 2rem;
+  padding: 2rem;
 }
 
 .input-area {
-    margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .textarea-container {
-    position: relative;
-    margin-bottom: 1rem;
+  position: relative;
+  margin-bottom: 1rem;
 }
 
 #noeauuserInput {
-    width: 100%;
-    min-height: 120px;
-    padding: 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    resize: vertical;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 #noeauuserInput:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(116, 168, 74, 0.2);
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(116, 168, 74, 0.2);
 }
 
 #noeauuserInput:disabled {
-    background-color: rgba(240, 240, 240, 0.5);
-    cursor: not-allowed;
+  background-color: rgba(240, 240, 240, 0.5);
+  cursor: not-allowed;
 }
 
 .checkbox-container {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
 }
 
 .checkbox-wrapper {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 #generateCheckbox {
-    margin-right: 0.5rem;
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
 }
 
 .checkbox-label {
-    font-weight: 500;
-    cursor: pointer;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 #checkboxDescription {
-    margin-top: 0.25rem;
-    font-size: 0.9rem;
-    color: #666;
-    margin-left: 1.65rem;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: #666;
+  margin-left: 1.65rem;
 }
 
 .response-area {
-    margin-top: 1.5rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 1.25rem;
-    border-left: 4px solid var(--primary-color);
-    transition: all 0.3s ease;
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
+  margin-top: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.25rem;
+  border-left: 4px solid var(--primary-color);
+  transition: all 0.3s ease;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
 }
 
 .response-area.empty {
-    border-left-color: var(--border-color);
-    background-color: #f5f5f5;
+  border-left-color: var(--border-color);
+  background-color: #f5f5f5;
 }
 
 .response-label {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--primary-dark);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--primary-dark);
 }
 
 #noeauserverResponse {
-    line-height: 1.6;
-    word-wrap: break-word;
-    color: var(--text-color);
+  line-height: 1.6;
+  word-wrap: break-word;
+  color: var(--text-color);
 }
 
 .button-container {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
 }
 
 #noeausubmitButton {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    min-width: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #noeausubmitButton:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 #noeausubmitButton:active {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 .loading-dots::after {
-    content: '';
-    animation: dots 1.5s infinite;
+  content: '';
+  animation: dots 1.5s infinite;
 }
 
 @keyframes dots {
-    0%, 20% { content: ''; }
-    40% { content: '.'; }
-    60% { content: '..'; }
-    80%, 100% { content: '...'; }
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
 }
 
 @media (max-width: 768px) {
-    .noeau-wrapper {
-        padding: 1rem !important;
-    }
+  .noeau-wrapper {
+    padding: 1rem !important;
+  }
 
-    .noeau-header, .noeau-content {
-        padding: 1.25rem !important;
-    }
+  .noeau-header, .noeau-content {
+    padding: 1.25rem !important;
+  }
 }
+
