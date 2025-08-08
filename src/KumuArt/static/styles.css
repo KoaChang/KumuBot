@@ -1,0 +1,56 @@
+.artbody {
+    font-family: Arial, sans-serif;
+    padding: 30px;
+    text-align: center;
+}
+
+.artcontainer {
+    max-width: 800px;
+    margin: auto;
+    border: 2px solid #ddd; /* Add a 2-pixel solid border with color #ddd */
+    padding: 20px; /* Add 20px of padding inside the border */
+    margin-top: 20px; /* Add 20px of margin outside the border */
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+}
+
+#artdescription {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+#artimage {
+    max-width: 100%; /* makes sure the image is not wider than the container */
+    max-height: 100%; /* makes sure the image is not taller than the container */
+    height: auto; /* maintains the aspect ratio */
+    width: auto; /* maintains the aspect ratio */
+    display: block; /* to remove extra space below the image */
+    margin: 0 auto; /* to center the image in the container if it is smaller than the container */
+}
+
+#artsubmit-btn {
+    padding: 10px 20px;
+    background-color: #74a84a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#artimage-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#artoutput {
+    min-height: 40px;
+}
+
+#artfact-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 10px; /* reduced from 20px to 10px */
+}
