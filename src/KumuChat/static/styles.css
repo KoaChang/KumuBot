@@ -1,124 +1,353 @@
 /* Reset styles for consistency */
 * {
-  box-sizing: border-box !important;
+    box-sizing: border-box !important;
 }
 
 /* Color variables */
 :root {
-  --primary-color: #74a84a;
-  --primary-dark: #2c541d;
-  --bg-color: #f8f8f8;
-  --card-bg: #ffffff;
-  --text-color: #333333;
-  --border-color: #e0e0e0;
+    --primary-color: #74a84a;
+    --primary-dark: #2c541d;
+    --bg-color: #f8f8f8;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e0e0e0;
 }
 
-/* Chat UI Styling */
+/* Override Elementor/WordPress constraints */
+.elementor-widget-html .elementor-widget-container,
+.elementor-html {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+}
+
+/* KumuChat container */
 .kumuchat-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  padding: 20px 0;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    padding: 20px 0 !important;
+    max-width: 100% !important;
 }
 
 .kumuchat-container {
-  width: 100%;
-  max-width: 1400px;
-  background-color: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  margin: 0 auto;
+    width: 100% !important;
+    max-width: 1400px !important;
+    background-color: var(--card-bg) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+    margin: 0 auto !important;
 }
 
 .kumuchat-header {
-  padding: 0.7rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  border-bottom: 1px solid var(--border-color);
-  text-align: left;
+    padding: 0.7rem 1.5rem !important;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    text-align: left !important;
 }
 
 .kumuchat-header h2 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  margin: 0;
-  color: white;
+    font-size: 1.8rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: white !important;
 }
 
 .kumuchat-content {
-  padding: 2rem;
+    padding: 2rem !important;
 }
 
+/* Messages container */
 .kumuchat-message-container {
-  height: 600px;
-  overflow-y: auto;
-  background-color: var(--bg-color);
-  border-radius: 8px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--border-color);
+    height: 600px !important;
+    overflow-y: auto !important;
+    background-color: var(--bg-color) !important;
+    border-radius: 8px !important;
+    padding: 1.25rem !important;
+    margin-bottom: 1.5rem !important;
+    border: 1px solid var(--border-color) !important;
 }
 
-/* Message styles */
+/* Message styling */
+.kumuchat-message {
+    margin-bottom: 15px !important;
+    position: relative !important;
+    word-wrap: break-word !important;
+}
+
 .kumuchat-user-message {
-  background-color: #e9f5ff;
-  padding: 12px 15px;
-  border-radius: 12px 12px 2px 12px;
-  margin-left: 20%;
+    background-color: #e9f5ff !important;
+    padding: 12px 15px !important;
+    border-radius: 12px 12px 2px 12px !important;
+    margin-left: 20% !important;
+    margin-right: 0 !important;
+    color: var(--text-color) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    position: relative !important;
 }
 
 .kumuchat-assistant-message {
-  background-color: #f0f7eb;
-  padding: 12px 15px;
-  border-radius: 12px 12px 12px 2px;
-  margin-right: 20%;
-  border-left: 3px solid var(--primary-color);
+    background-color: #f0f7eb !important;
+    padding: 12px 15px !important;
+    border-radius: 12px 12px 12px 2px !important;
+    margin-right: 20% !important;
+    margin-left: 0 !important;
+    color: var(--text-color) !important;
+    border-left: 3px solid var(--primary-color) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Input styling */
+.kumuchat-message p {
+    margin: 0 0 8px 0 !important;
+    line-height: 1.5 !important;
+}
+
+.kumuchat-message p:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Markdown styling */
+.kumuchat-message code {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    font-family: monospace !important;
+    font-size: 0.9em !important;
+}
+
+.kumuchat-message pre {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    padding: 12px !important;
+    border-radius: 6px !important;
+    overflow-x: auto !important;
+    margin: 10px 0 !important;
+}
+
+.kumuchat-message pre code {
+    background-color: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+    line-height: 1.4 !important;
+    font-size: 0.9em !important;
+}
+
+.kumuchat-message a {
+    color: var(--primary-dark) !important;
+    text-decoration: underline !important;
+}
+
+.kumuchat-message blockquote {
+    border-left: 3px solid var(--primary-color) !important;
+    margin: 5px 0 !important;
+    padding-left: 10px !important;
+    color: #555 !important;
+}
+
+.kumuchat-message ul, .kumuchat-message ol {
+    margin: 8px 0 !important;
+    padding-left: 25px !important;
+}
+
+.kumuchat-message h1, .kumuchat-message h2, .kumuchat-message h3, 
+.kumuchat-message h4, .kumuchat-message h5, .kumuchat-message h6 {
+    margin: 16px 0 8px 0 !important;
+    font-weight: 600 !important;
+}
+
+.kumuchat-message h1 { font-size: 1.5em !important; }
+.kumuchat-message h2 { font-size: 1.35em !important; }
+.kumuchat-message h3 { font-size: 1.2em !important; }
+
+.kumuchat-delete-icon {
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+    cursor: pointer !important;
+    color: #ff4d4d !important;
+    font-weight: bold !important;
+    font-size: 14px !important;
+    opacity: 0.7 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.kumuchat-delete-icon:hover {
+    opacity: 1 !important;
+}
+
+/* Input area */
+.kumuchat-input-wrapper {
+    margin-bottom: 0.8rem !important;
+}
+
 .kumuchat-user-input {
-  width: 100%;
-  min-height: 80px;
-  max-height: 150px;
-  padding: 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 1rem;
-  line-height: 1.5;
-  resize: none;
+    width: 100% !important;
+    min-height: 80px !important;
+    max-height: 150px !important;
+    padding: 1rem !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    resize: none !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+    margin-bottom: 0.8rem !important;
+}
+
+.kumuchat-user-input:focus {
+    outline: none !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(116, 168, 74, 0.2) !important;
+}
+
+/* File input styling */
+.kumuchat-file-input-wrapper {
+    margin-bottom: 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.kumuchat-file-input-label {
+    background-color: #f0f0f0 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    margin-right: 10px !important;
+    transition: background-color 0.3s ease !important;
+    font-size: 0.9rem !important;
+}
+
+.kumuchat-file-input-label:hover {
+    background-color: #e0e0e0 !important;
+}
+
+.kumuchat-file-name {
+    font-size: 0.9rem !important;
+    color: var(--text-color) !important;
+    font-style: italic !important;
+}
+
+#kumuchat-image-input {
+    display: none !important;
+}
+
+/* Checkbox styling */
+.kumuchat-checkbox-wrapper {
+    margin-bottom: 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.kumuchat-checkbox {
+    margin-right: 0.5rem !important;
 }
 
 /* Button styling */
 .kumuchat-submit-btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease, transform 0.2s ease !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+    min-width: 120px !important;
+    display: block !important;
+    margin: 0 auto !important;
 }
 
 .kumuchat-submit-btn:hover {
-  background-color: var(--primary-dark);
-  transform: translateY(-2px);
+    background-color: var(--primary-dark) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .kumuchat-wrapper {
-      padding: 1rem;
-  }
-  .kumuchat-header, .kumuchat-content {
-      padding: 1.25rem;
-  }
-  .kumuchat-message-container {
-      height: 450px;
-  }
+.kumuchat-submit-btn:active {
+    transform: translateY(0) !important;
 }
+
+.kumuchat-submit-btn:disabled {
+    opacity: 0.7 !important;
+    cursor: not-allowed !important;
+}
+
+/* Image styling */
+.kumuchat-image {
+    max-width: 100% !important;
+    max-height: 200px !important;
+    border-radius: 8px !important;
+    margin: 10px 0 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Loading animation */
+.loading-dots::after {
+    content: '' !important;
+    animation: dots 1.5s infinite !important;
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+/* Scrollbar styling */
+.kumuchat-message-container::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.kumuchat-message-container::-webkit-scrollbar-track {
+    background: #f0f0f0 !important;
+    border-radius: 4px !important;
+}
+
+.kumuchat-message-container::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0 !important;
+    border-radius: 4px !important;
+}
+
+.kumuchat-message-container::-webkit-scrollbar-thumb:hover {
+    background-color: #a0a0a0 !important;
+}
+
+.kumuchat-user-input::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.kumuchat-user-input::-webkit-scrollbar-track {
+    background: #f0f0f0 !important;
+    border-radius: 4px !important;
+}
+
+.kumuchat-user-input::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0 !important;
+    border-radius: 4px !important;
+}
+
+.kumuchat-user-input::-webkit-scrollbar-thumb:hover {
+    background-color: #a0a0a0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .kumuchat-wrapper {
+        padding: 1rem !important;
+    }
+    .kumuchat-header, .kumuchat-content {
+        padding: 1.25rem !important;
+    }
+    .kumuchat-message-container {
+        height: 450px !important;
+    }
+}
+
