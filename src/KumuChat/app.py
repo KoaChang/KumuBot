@@ -1,40 +1,45 @@
 from flask import Flask, request, jsonify, render_template
 from openai import OpenAI
-import os
 from flask_cors import CORS
+import os
+import pytz
+from datetime import datetime
 
-client = OpenAI(api_key="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")
+openai_client = OpenAI(api_key="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")
 
 app = Flask(__name__, static_folder="static")
 CORS(
     app,
     resources={
-        r"/chat": {"origins": ["https://kumubot.com", "https://kumubot.com/kumuchat"]}
+        r"/chat": {"origins": ["https://kumubot.com", "https://kumubot.com/kumuchat", "http://127.0.0.1:5500"]},
     },
 )
 
 
-def get_completion(prompt, model="gpt-3.5-turbo", temperature=0, max_tokens=400):
-    messages = [{"role": "user", "content": prompt}]
-    response = client.chat.completions.create(
+def log_api_usage(endpoint_name, prompt, completion, total):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    logs_dir = os.path.join(dir_path, "logs")
+    if not os.path.exists(logs_dir):
+        os.makedirs(logs_dir)
+    log_file = os.path.join(logs_dir, f"{endpoint_name}.txt")
+    with open(log_file, "a") as f:
+        now_utc = datetime.now(pytz.timezone("UTC"))
+        now_hst = now_utc.astimezone(pytz.timezone("Pacific/Honolulu"))
+        formatted_time = now_hst.strftime("%m/%d/%Y %I:%M %p")
+        f.write(
+            f"{formatted_time}. Prompt: {prompt}. Completion: {completion}. Total: {total}.\n"
+        )
+
+
+def get_completion_from_messagesOpen(
+    messages, model="gpt-4.1-mini", temperature=0, max_tokens=512
+):
+    response = openai_client.chat.completions.create(
         model=model,
         messages=messages,
         temperature=temperature,
         max_tokens=max_tokens,
     )
-    return response
-
-
-def get_completion_from_messages(
-    messages, model="gpt-3.5-turbo", temperature=0, max_tokens=250
-):
-    response = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        temperature=temperature,  # this is the degree of randomness of the model's output
-        max_tokens=max_tokens,  # the maximum number of tokens the model can ouptut
-    )
-
     return response
 
 
@@ -44,59 +49,38 @@ def home():
 
 
 # KUMUCHAT
-# cheaper alternative
 @app.route("/chat", methods=["POST"])
 def message():
     data = request.get_json()
+
     message_history = data["history"]
-    is_english_enabled = data.get("english_output")
+    is_hawaiian_enabled = data.get("hawaiian_output")
     current_message = data["message"]
 
-    text = ""
+    if (
+        message_history
+        and message_history[-1]["role"] == "user"
+        and message_history[-1]["content"] == current_message
+    ):
+        message_history = message_history[:-1]
 
-    if is_english_enabled == True:
-        system_message = """You are KumuBot, an automated assistant made by Koa Chang and trained on Hawaiian data.\
-        You are an expert on questions related to anything Hawaiʻi and its language and culture.\
-        Your purpose is to answer questions and be helpful to the user.\
-        Your must respond in English.\
-        Only output complete sentences.\
-        """
-
-        current_message += " (Remember to respond in English)"
-
-        messages = (
-            [{"role": "system", "content": f"{system_message}"}]
-            + message_history[:-1]
-            + [{"role": "user", "content": f"{current_message}"}]
+    system_message_content = (
+        """You are KumuChat, an automated assistant made by Koa Chang and trained on Hawaiian data.
+You are an expert on questions related to anything Hawaiʻi and its language and culture.
+Your purpose is to answer questions and be helpful to the user.
+You must respond in {}.
+Only output complete sentences.""".format(
+            "the Hawaiian language" if is_hawaiian_enabled else "English"
         )
+    )
 
-        response = get_completion_from_messages(messages, max_tokens=250)
+    messages = []
+    messages.append({"role": "system", "content": system_message_content})
+    messages.extend(message_history)
+    messages.append({"role": "user", "content": current_message})
 
-        text = response.choices[0].message.content
-
-    else:
-        system_message = """You are KumuBot, an automated assistant made by Koa Chang and trained on Hawaiian data.\
-        You are an expert on questions related to anything Hawaiʻi and its language and culture.\
-        Your purpose is to answer questions and be helpful to the user.\
-        Your must respond in Hawaiian.\
-        Only output complete sentences.\
-        """
-
-        current_message += " (Remember to respond in Hawaiian)"
-
-        messages = (
-            [{"role": "system", "content": f"{system_message}"}]
-            + message_history[:-1]
-            + [{"role": "user", "content": f"{current_message}"}]
-        )
-
-        response = get_completion_from_messages(messages, max_tokens=250)
-
-        text = response.choices[0].message.content
-
-        # Here you can process the user message and generate a system message
-        # For now, we'll just echo back the user message
-        # response =
+    response = get_completion_from_messagesOpen(messages)
+    text = response.choices[0].message.content
 
     return jsonify({"message": text})
 
