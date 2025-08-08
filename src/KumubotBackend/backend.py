@@ -1,5 +1,5 @@
-# This file uses Open AI GPT4o mini for all text completions and uses dalle-3 for all image generations.
-# Has the functionality to switch to llama if needed.
+# This file uses Open AI gpt-4.1-mini for all text completions and uses dalle-3 for all image generations.
+# Has the functionality to switch to Llama and Groq if needed.
 
 from flask import Flask, request, jsonify
 from groq import Groq
@@ -62,7 +62,7 @@ def log_api_usage(endpoint_name, prompt, completion, total):
             )
 
 def get_completionOpen(
-    prompt, model="gpt-4o-mini", temperature=0, max_tokens=512
+    prompt, model="gpt-4.1-mini", temperature=0, max_tokens=512
 ):
     messages = [{"role": "user", "content": prompt}]
     response = openai_client.chat.completions.create(
@@ -75,7 +75,7 @@ def get_completionOpen(
 
 
 def get_completion_from_messagesOpen(
-    messages, model="gpt-4o-mini", temperature=0, max_tokens=512
+    messages, model="gpt-4.1-mini", temperature=0, max_tokens=512
 ):
     response = openai_client.chat.completions.create(
         model=model,
@@ -165,19 +165,14 @@ Only output complete sentences.""".format("the Hawaiian language" if is_hawaiian
     # Include the system message as the first message
     messages.append({'role': 'system', 'content': system_message_content})
 
-    # Add the message history - OpenAI GPT-4o-mini can handle images in message history
+    # Add the message history - OpenAI gpt-4.1-mini can handle images in message history
     messages.extend(message_history)
 
     # Append the current message
     messages.append({'role': 'user', 'content': current_message})
 
     # Call the OpenAI completion function
-    if isinstance(current_message, list) and any(part.get('type') == 'image_url' for part in current_message):
-        # For messages with images, use a higher temperature for more creative responses
-        response = get_completion_from_messagesOpen(messages, temperature=1)
-    else:
-        # For regular text messages, use the default temperature
-        response = get_completion_from_messagesOpen(messages)
+    response = get_completion_from_messagesOpen(messages)
 
     # Optional: Log the messages for debugging
     # log_to_file(messages)
@@ -187,276 +182,28 @@ Only output complete sentences.""".format("the Hawaiian language" if is_hawaiian
 
     return jsonify({"message": text})
 
-# OLD KumuChat code to work with only one image upload possible in history due to Llama 3.2 vision contraints
-# @app.route("/chat", methods=["POST"])
-# def message():
-#     data = request.get_json()
-
-#     dir_path = os.path.dirname(os.path.realpath(__file__))
-
-#     # Create a directory for the logs if it doesn't exist
-#     logs_dir = os.path.join(dir_path, "logs")
-#     if not os.path.exists(logs_dir):
-#         os.makedirs(logs_dir)
-
-#     # Open the log file for the endpoint
-#     log_file = os.path.join(logs_dir, "debug.txt")
-
-#     def log_to_file(messages):
-#         with open(log_file, "a") as f:
-#             f.write(f"{messages}\n\n")
-#             # for i, message in enumerate(messages, start=1):
-#             #     f.write(f"Message {i}:\n")
-#             #     if isinstance(message["content"], list):
-#             #         processed_content = []
-#             #         for part in message["content"]:
-#             #             if part.get("type") == "image_url" and "image_url" in part:
-#             #                 # Replace the URL with "image" for logging purposes
-#             #                 part = {**part, "image_url": "image"}
-#             #             processed_content.append(part)
-#             #         message["content"] = processed_content
-#             #     # Log the processed message
-#             #     f.write(f"{message}\n\n")
-
-#     # Check if the message content contains an image
-#     def message_contains_image(content):
-#         if isinstance(content, list):
-#             return any(part.get('type') == 'image_url' for part in content)
-#         elif isinstance(content, dict):
-#             return content.get('type') == 'image_url'
-#         return False
-
-#     # Remove messages from message_history that contain an image, along with their following assistant messages
-#     def remove_image_messages(message_history):
-#         new_message_history = []
-#         i = 0
-#         while i < len(message_history):
-#             msg = message_history[i]
-#             if msg['role'] == 'user' and message_contains_image(msg['content']):
-#                 # Skip this user message
-#                 i += 1
-#                 # Also skip the next assistant message if it exists
-#                 if i < len(message_history) and message_history[i]['role'] == 'assistant':
-#                     i += 1
-#             else:
-#                 new_message_history.append(msg)
-#                 i += 1
-#         return new_message_history
-
-#     message_history = data["history"]  # List of dictionaries with 'role' and 'content'
-#     is_hawaiian_enabled = data.get("hawaiian_output")
-#     current_message = data["message"]  # Can be a string or a list of message parts
-
-#     has_image = message_contains_image(current_message)
-
-#     # Always remove previous messages with images from the message history
-#     message_history = remove_image_messages(message_history)
-
-#     # Exclude the last user message from the history if it matches the current message
-#     if message_history and message_history[-1]['role'] == 'user' and message_history[-1]['content'] == current_message:
-#         message_history = message_history[:-1]
-
-#     # Prepare the system message content
-#     system_message_content = """You are KumuChat, an automated assistant made by Koa Chang and trained on Hawaiian data.
-# You are an expert on questions related to anything Hawaiʻi and its language and culture.
-# Your purpose is to answer questions and be helpful to the user.
-# You must respond in {}.
-# Only output complete sentences.""".format("the Hawaiian language" if is_hawaiian_enabled else "English")
-
-#     # Build the 'messages' list
-#     messages = []
-
-#     if has_image:
-#         # If the current message has an image, don't use any of the message history
-#         # Only augment the text parts of the current message by adding the system prompt in front
-
-#         if is_hawaiian_enabled:
-#             added = "You must respond in the Hawaiian language."
-#         else:
-#             added = "You must respond in the English language."
-
-
-#         # Function to augment the text parts of the content
-#         def augment_text_content(content):
-#             if isinstance(content, list):
-#                 augmented_content = []
-#                 for part in content:
-#                     if part.get('type') == 'text':
-#                         original_text = part.get('text', '')
-#                         augmented_text = original_text
-#                         augmented_content.append({'type': 'text', 'text': augmented_text})
-#                     else:
-#                         # Keep other parts (like images) unchanged
-#                         augmented_content.append(part)
-#                 return augmented_content
-
-#         # Augment the current message content
-#         augmented_content = augment_text_content(current_message)
-#         # augmented_content = current_message
-
-#         # Build the message to send to LLM
-#         messages.append({'role': 'user', 'content': augmented_content})
-
-#         # Call the completion function
-#         response = get_completion_from_messages(messages, temperature=1)
-#     else:
-#         # If the current message does not have an image, send the message history along with the system message
-#         # Include the system message as the first message
-#         messages.append({'role': 'system', 'content': system_message_content})
-
-#         # Add the message history
-#         messages.extend(message_history)
-
-#         # Append the current message
-#         messages.append({'role': 'user', 'content': current_message})
-
-#         # Call the completion function
-#         response = get_completion_from_messages(messages)
-
-#     # Log the messages
-#     # log_to_file(messages)
-
-#     text = response.choices[0].message.content
-
-#     return jsonify({"message": text})
-
-
-# MIN WORKING IMAGE TEST
-
-# import base64
-
-# # Function to encode the image
-# def encode_image(image_path):
-#     with open(image_path, "rb") as image_file:
-#         return base64.b64encode(image_file.read()).decode("utf-8")
-
-# @app.route("/chat", methods=["POST"])
-# def message():
-#     # Path to the locally saved image
-#     dir_path = os.path.dirname(os.path.realpath(__file__))
-
-#     # Create a directory for the logs if it doesn't exist
-#     logs_dir = os.path.join(dir_path, "logs")
-#     if not os.path.exists(logs_dir):
-#         os.makedirs(logs_dir)
-
-#     # Open the log file for the endpoint
-#     image_file = os.path.join(logs_dir, "received.png")
-
-#     # Encode the image as Base64
-#     base64_image = encode_image(image_file)
-
-#     # Create the data URL
-#     data_url = f"data:image/png;base64,{base64_image}"
-
-#     log_file = os.path.join(logs_dir, "debug.txt")
-
-#     def log_to_file(message):
-#         with open(log_file, "a") as f:
-#             f.write(f"{message}\n")
-
-#     # Prepare messages
-#     messages = [
-#         {
-#             "role": "user",
-#             "content": [
-#                 {"type": "text", "text": "What is in this image?"},
-#                 {"type": "image_url", "image_url": {"url": data_url}}
-#             ]
-#         }
-#     ]
-
-#     log_to_file(f"Messages sent to Groq: {messages}")
-
-#     # Send the request to Groq API
-#     response = client.chat.completions.create(
-#         model="llama-3.2-90b-vision-preview",
-#         messages=messages,
-#         temperature=0,
-#         max_tokens=300,
-#         top_p=1,
-#         stream=False,
-#         stop=None,
-#     )
-
-#     # Return the response
-#     return jsonify({"message": response.choices[0].message.content})
-
-
-
-# OLD KUMUCHAT WITHOUT IMAGE OPTION:
-# def get_completion_from_messages(messages, max_tokens=3000, temperature=0):
-#     completion = client.chat.completions.create(
-#         model="llama-3.2-90b-vision-preview",  # Use the vision model
-#         messages=messages,
-#         temperature=temperature,
-#         max_tokens=max_tokens,
-#         top_p=1,
-#         stream=False,
-#         stop=None,
-#     )
-#     return completion
-
-# @app.route("/chat", methods=["POST"])
-# def message():
-#     data = request.get_json()
-#     message_history = data["history"]  # List of dictionaries with 'role' and 'content'
-#     is_hawaiian_enabled = data.get("hawaiian_output")
-#     current_message = data["message"]  # Can be a string or a list of message parts
-
-#     # Build the 'messages' list
-#     messages = []
-
-#     # Add system message
-#     if is_hawaiian_enabled:
-#         system_message = """You are KumuChat, an automated assistant made by Koa Chang and trained on Hawaiian data.
-# You are an expert on questions related to anything Hawaiʻi and its language and culture.
-# Your purpose is to answer questions and be helpful to the user.
-# You must respond in the Hawaiian language.
-# Only output complete sentences."""
-#     else:
-#         system_message = """You are KumuChat, an automated assistant made by Koa Chang and trained on Hawaiian data.
-# You are an expert on questions related to anything Hawaiʻi and its language and culture.
-# Your purpose is to answer questions and be helpful to the user.
-# You must respond in English.
-# Only output complete sentences."""
-
-#     messages.append({"role": "system", "content": system_message})
-
-#     # Add message history
-#     for msg in message_history:
-#         messages.append({
-#             "role": msg['role'],
-#             "content": msg['content']
-#         })
-
-#     # Add current message
-#     messages.append({"role": "user", "content": current_message})
-
-#     # Call the completion function
-#     response = get_completion_from_messages(messages)
-
-#     prompt_tokens = response.usage.prompt_tokens
-#     completion_tokens = response.usage.completion_tokens
-#     total_tokens = response.usage.total_tokens
-
-#     log_api_usage("chat", prompt_tokens, completion_tokens, total_tokens)
-
-#     text = response.choices[0].message.content
-
-#     return jsonify({"message": text})
-
-
 # KUMUART
 @app.route("/art", methods=["POST"])
 def generate_image():
     description = request.json["description"]
 
     prompt = f"You are a expert artist in the Hawaiian culture and style. Generate an image of {description} in the style of Hawaiian culture and art."
+
+    # Dalle-3 Version (1024x1024)
     response = openai_client.images.generate(
         model="dall-e-3", prompt=prompt, size="1024x1024", n=1
     )
-    # response = client.images.generate(model="dall-e-2",prompt=prompt,size="256x256",n=1)
+
+    # GPT-Image-1 Version (medium quality, 1024×1024).
+    # As of 06/22/25, $0.29 per image which is way more than Dalle-3 $0.04 per image, so I will be sticking to Dalle-3 for now.
+    # Should revisit this later.
+    # response = openai_client.images.generate(
+    #     model="gpt-image-1",
+    #     prompt=prompt,
+    #     size="1024x1024",
+    #     quality="medium",          # low | medium | high | auto
+    #     n=1,
+    # )
 
     image_url = response.data[0].url
 
@@ -483,9 +230,6 @@ def generate_image():
     log_api_usage("art", prompt_tokens, completion_tokens, total_tokens)
 
     return jsonify({"image_url": image_url, "fun_fact": fun_fact_text})
-
-    # # For now, simply return a static image
-    # return send_file('output.jpeg', mimetype='image/jpeg')
 
 
 # KUMUTRANSLATE
