@@ -27,7 +27,7 @@ def log_api_usage(endpoint_name, prompt, completion, total):
 
 
 def get_completion_from_messagesOpen(
-    messages, model="gpt-4.1-mini", temperature=0, max_tokens=512
+    messages, model="gpt-5-nano", temperature=0, max_tokens=512
 ):
     response = openai_client.chat.completions.create(
         model=model,

@@ -1,4 +1,4 @@
-# This file uses Open AI gpt-4.1-mini for all text completions and uses dalle-3 for all image generations.
+# This file uses Open AI gpt-5-nano for all text completions and uses dalle-3 for all image generations.
 # Has the functionality to switch to Llama and Groq if needed.
 
 from flask import Flask, request, jsonify
@@ -62,7 +62,7 @@ def log_api_usage(endpoint_name, prompt, completion, total):
             )
 
 def get_completionOpen(
-    prompt, model="gpt-4.1-mini", temperature=0, max_tokens=512
+    prompt, model="gpt-5-nano", temperature=0, max_tokens=512
 ):
     messages = [{"role": "user", "content": prompt}]
     response = openai_client.chat.completions.create(
@@ -75,7 +75,7 @@ def get_completionOpen(
 
 
 def get_completion_from_messagesOpen(
-    messages, model="gpt-4.1-mini", temperature=0, max_tokens=512
+    messages, model="gpt-5-nano", temperature=0, max_tokens=512
 ):
     response = openai_client.chat.completions.create(
         model=model,
@@ -165,7 +165,7 @@ Only output complete sentences.""".format("the Hawaiian language" if is_hawaiian
     # Include the system message as the first message
     messages.append({'role': 'system', 'content': system_message_content})
 
-    # Add the message history - OpenAI gpt-4.1-mini can handle images in message history
+    # Add the message history - OpenAI gpt-5-nano can handle images in message history
     messages.extend(message_history)
 
     # Append the current message
