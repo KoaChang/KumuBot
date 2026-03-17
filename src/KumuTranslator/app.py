@@ -41,19 +41,24 @@ def translate():
 
     if language == "Hawaiian":
         messages = [
-            {"role": "user", "content": f"Translate the following text to English and output the translated English text. "
-                                         f"The original text should be in Hawaiian, so you should be translating Hawaiian to English. "
-                                         f"There should be no Hawaiian text in your output. "
-                                         f"Please do not output anything before or after the actual translated text. Text: {text}"},
+            {"role": "user", "content": f"""Your name is KumuTranslate and your job is to translate the following Hawaiian text to English.
+                                         The text I will give you should be in Hawaiian. If the text does not seem to be in Hawaiian,
+                                         please explain that your job is to translate Hawaiian text to English so please input Hawaiian text.
+                                         There should be no Hawaiian text in your output.
+                                         Please do not output anything before or after the actual translated text if you are translating. Text: {text}"""},
         ]
         resp = get_completion_from_messagesOpen(messages)
         translated_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
     else:
         messages = [
-            {"role": "user", "content": f"Translate the following text to Hawaiian and output the translated Hawaiian text. "
-                                         f"The original text should be in English, so you should be translating English to Hawaiian. "
-                                         f"There should be no English text in your output. "
-                                         f"Please do not output anything before or after the actual translated text. Text: {text}"},
+            {
+                "role": "user",
+                "content": f"""Your name is KumuTranslate and your job is to translate the following English text to Hawaiian.
+                The text I will give you should be in English.
+                If the text does not seem to be in English, please explain that your job is to translate English text to Hawaiian so please input English text.
+                There should be no English text in your output unless you are explaining your job is to translate English to Hawaiian. If you actually preform a translation to Hawaiian, then the output text should only be Hawaiian.
+                Please do not output anything before or after the actual translated text if you are translating.
+                Text: {text}"""},
         ]
         resp = get_completion_from_messagesOpen(messages)
         translated_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
