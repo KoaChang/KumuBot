@@ -8,7 +8,7 @@ import pytz
 # ---------------------------
 # OpenAI Client Setup
 # ---------------------------
-openai_client = OpenAI(api_key="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")
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ---------------------------
 # HTML sanitizing helper

@@ -1,8 +1,12 @@
 import sys
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
 # Add the shared directory to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'shared'))
+
+load_dotenv(Path(__file__).resolve().with_name(".env"))
 
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS

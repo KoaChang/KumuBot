@@ -17,9 +17,15 @@ def get_completion_from_messages(messages):
     return completion
 
 
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from groq import Groq
 
-client = Groq(api_key="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")
+load_dotenv(Path(__file__).resolve().with_name(".env"))
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 response = get_completion("Hello how are you")
 

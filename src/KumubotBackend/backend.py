@@ -3,18 +3,22 @@ import re
 import json
 import base64
 import tempfile
+from pathlib import Path
 from typing import Union, List, Any, Dict, Tuple
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from openai import OpenAI
+from dotenv import load_dotenv
 
 # ---------------------------
 # Flask app setup
 # ---------------------------
+load_dotenv(Path(__file__).resolve().with_name(".env"))
+
 app = Flask(__name__)
 CORS(app)
 
-openai_client = OpenAI(api_key="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")
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ---------------------------
 # HTML sanitizing helper

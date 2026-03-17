@@ -2,11 +2,13 @@ import base64
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
+os.environ.setdefault("OPENAI_API_KEY", "test-openai-key")
 
 BACKEND_PATH = Path(__file__).with_name("backend.py")
 BACKEND_SPEC = importlib.util.spec_from_file_location("kumubot_backend_under_test", BACKEND_PATH)
