@@ -34,22 +34,27 @@ def home():
 def generate_image():
     description = request.json["description"]
 
-    prompt = f"You are a expert artist in the Hawaiian culture and style. Generate an image of {description} in the style of Hawaiian culture and art."
-
-    # DALL·E 3 (unchanged)
-    response = openai_client.images.generate(
-        model="dall-e-3", prompt=prompt, size="1024x1024", n=1
+    prompt = (
+        "You are a expert artist in the Hawaiian culture and style. "
+        f"Generate an image of {description} in the style of Hawaiian culture and art."
     )
-    image_url = response.data[0].url
+
+    img = openai_client.images.generate(
+        model="gpt-image-1",
+        prompt=prompt,
+        size="1024x1024",
+        output_format="webp",
+        output_compression=85,
+    )
+    b64 = img.data[0].b64_json
+    image_url = f"data:image/webp;base64,{b64}"
 
     system = "Your job is provide an interesting fun fact about a topic the user enters."
-
     messages = [
-        {"role": "system", "content": f"{system}"},
+        {"role": "system", "content": system},
         {"role": "user", "content": f"Write a fun fact about the following topic: {description}. Use complete sentences."},
     ]
 
-    # Fun fact via Responses API (gpt-5-nano)
     fun_fact_resp = get_completion_from_messagesOpen(messages)
     fun_fact_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(fun_fact_resp)
 
