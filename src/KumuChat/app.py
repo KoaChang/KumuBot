@@ -49,7 +49,6 @@ def message():
         "You are an expert on questions related to anything Hawaiʻi and its language and culture.\n"
         "Your purpose is to answer questions and be helpful to the user.\n"
         f"You must respond in {'the Hawaiian language' if is_hawaiian_enabled else 'English'}.\n"
-        "Only output complete sentences."
     )
 
     # Build the 'messages' list for Responses API
