@@ -199,9 +199,9 @@ def _extract_text_and_usage(resp) -> Tuple[str, int, int, int]:
     return (text or "", input_tokens, output_tokens, total_tokens)
 
 # ---------------------------
-# Model wrappers (gpt-5-nano)
+# Model wrappers (gpt-5-mini)
 # ---------------------------
-def get_completionOpen(prompt: str, model: str = "gpt-5-nano"):
+def get_completionOpen(prompt: str, model: str = "gpt-5-mini"):
     """Simple text prompt -> text response."""
     resp = openai_client.responses.create(
         model=model,
@@ -210,7 +210,7 @@ def get_completionOpen(prompt: str, model: str = "gpt-5-nano"):
     )
     return resp
 
-def get_completion_from_messagesOpen(messages: List[Dict[str, Any]], model: str = "gpt-5-nano"):
+def get_completion_from_messagesOpen(messages: List[Dict[str, Any]], model: str = "gpt-5-mini"):
     """Full chat history -> text response."""
     instructions, input_msgs = _messages_to_responses_input(messages)
 
