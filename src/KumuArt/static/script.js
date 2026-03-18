@@ -1,80 +1,181 @@
-var loadingInterval;
+document.addEventListener('DOMContentLoaded', function() {
+    var submitButton = document.getElementById('artsubmit-btn');
+    var descriptionInput = document.getElementById('artdescription');
+    var imageElement = document.getElementById('artimage');
+    var outputContainer = document.getElementById('artoutput');
+    var factContainer = document.getElementById('artfact');
+    var imagePlaceholder = document.getElementById('image-placeholder');
+    var factPlaceholder = document.getElementById('fact-placeholder');
 
-function startLoadingAnimation() {
-var loadingTexts = ["Loading", "Loading.", "Loading..", "Loading..."];
-var i = 0;
-loadingInterval = setInterval(() => {
-    document.getElementById('artsubmit-btn').innerText = loadingTexts[i];
-    i = (i + 1) % loadingTexts.length; // This makes the animation loop
-}, 500); // Change the number to make the animation faster or slower
-}
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 
-function stopLoadingAnimation() {
-clearInterval(loadingInterval);
-document.getElementById('artsubmit-btn').innerText = 'Submit';
-}
+    function renderMarkdown(markdown) {
+        var normalized = escapeHtml(markdown || '').replace(/\r\n?/g, '\n').trim();
+        if (!normalized) {
+            return '';
+        }
 
-function submitDescription() {
-var description = document.getElementById('artdescription').value;
-var descriptionBox = document.getElementById('artdescription');
-var imageContainer = document.getElementById('artimage-container');
-var imageElement = document.getElementById('artimage');
-var outputContainer = document.getElementById('artoutput');
-var factContainer = document.getElementById('artfact');
+        function formatInline(text) {
+            var codeSpans = [];
+            var formatted = text.replace(/`([^`]+)`/g, function(_, code) {
+                codeSpans.push(code);
+                return '@@CODE' + (codeSpans.length - 1) + '@@';
+            });
 
-var imagePlaceholder = document.getElementById('image-placeholder');
-var factPlaceholder = document.getElementById('fact-placeholder');
+            formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+            formatted = formatted.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, '$1<em>$2</em>');
 
-if(description) {
-    descriptionBox.disabled = true;
-    startLoadingAnimation(); // Start the loading animation
-    factContainer.innerText = "";
-    imageElement.style.display = "none";  // Hide the image
-    factContainer.style.display = "none";  // Hide the fun fact
-    imagePlaceholder.style.display = "block"; // Show the placeholders
-    factPlaceholder.style.display = "block";
+            return formatted.replace(/@@CODE(\d+)@@/g, function(_, index) {
+                return '<code>' + codeSpans[Number(index)] + '</code>';
+            });
+        }
 
-    fetch('https://kumubot.pythonanywhere.com/art', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({description: description})
-    })
-    .then(response => response.json())
-    .then(data => {
-        var imgURL = data.image_url;
-        imageElement.src = imgURL;
-        descriptionBox.disabled = false;
-        outputContainer.innerText = "";
-        
-        var funFact = data.fun_fact;
-        factContainer.innerText = funFact;
+        var lines = normalized.split('\n');
+        var html = [];
+        var paragraphLines = [];
+        var listItems = [];
+        var listType = null;
 
-        imageElement.style.display = "block";  // Show the image and the fun fact
-        factContainer.style.display = "block";
-        imagePlaceholder.style.display = "none"; // Hide the placeholders
-        factPlaceholder.style.display = "none";
-        stopLoadingAnimation(); // Stop the loading animation
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        outputContainer.innerText = "Error occurred while generating image.";
-        descriptionBox.disabled = false;
-        stopLoadingAnimation(); // Stop the loading animation
+        function flushParagraph() {
+            if (!paragraphLines.length) {
+                return;
+            }
+            html.push('<p>' + formatInline(paragraphLines.join('<br>')) + '</p>');
+            paragraphLines = [];
+        }
+
+        function flushList() {
+            if (!listItems.length || !listType) {
+                return;
+            }
+            html.push('<' + listType + '>' + listItems.map(function(item) {
+                return '<li>' + formatInline(item) + '</li>';
+            }).join('') + '</' + listType + '>');
+            listItems = [];
+            listType = null;
+        }
+
+        lines.forEach(function(line) {
+            var trimmed = line.trim();
+
+            if (!trimmed) {
+                flushParagraph();
+                flushList();
+                return;
+            }
+
+            var headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+            if (headingMatch) {
+                flushParagraph();
+                flushList();
+                var level = headingMatch[1].length;
+                html.push('<h' + level + '>' + formatInline(headingMatch[2]) + '</h' + level + '>');
+                return;
+            }
+
+            var unorderedMatch = trimmed.match(/^[-*]\s+(.*)$/);
+            if (unorderedMatch) {
+                flushParagraph();
+                if (listType && listType !== 'ul') {
+                    flushList();
+                }
+                listType = 'ul';
+                listItems.push(unorderedMatch[1]);
+                return;
+            }
+
+            var orderedMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+            if (orderedMatch) {
+                flushParagraph();
+                if (listType && listType !== 'ol') {
+                    flushList();
+                }
+                listType = 'ol';
+                listItems.push(orderedMatch[1]);
+                return;
+            }
+
+            flushList();
+            paragraphLines.push(trimmed);
+        });
+
+        flushParagraph();
+        flushList();
+        return html.join('');
+    }
+
+    function startLoadingAnimation() {
+        submitButton.innerHTML = 'Loading<span class="loading-dots"></span>';
+        submitButton.disabled = true;
+    }
+
+    function stopLoadingAnimation() {
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
+    }
+
+    function submitDescription() {
+        var description = descriptionInput.value.trim();
+
+        if (!description) {
+            outputContainer.textContent = 'Please enter a description!';
+            return;
+        }
+
+        outputContainer.textContent = '';
+        descriptionInput.disabled = true;
+        startLoadingAnimation();
+
+        factContainer.innerHTML = '';
+        imageElement.style.display = 'none';
+        factContainer.style.display = 'none';
+        imagePlaceholder.style.display = 'block';
+        factPlaceholder.style.display = 'block';
+
+        fetch('https://kumubot.pythonanywhere.com/art', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ description: description })
+        })
+        .then(response => response.json())
+        .then(data => {
+            imageElement.src = data.image_url;
+            factContainer.innerHTML = renderMarkdown(data.fun_fact);
+
+            imageElement.style.display = 'block';
+            factContainer.style.display = 'block';
+            imagePlaceholder.style.display = 'none';
+            factPlaceholder.style.display = 'none';
+
+            descriptionInput.disabled = false;
+            stopLoadingAnimation();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            outputContainer.textContent = 'Error occurred while generating image.';
+            descriptionInput.disabled = false;
+            stopLoadingAnimation();
+        });
+    }
+
+    submitButton.addEventListener('click', submitDescription);
+
+    descriptionInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            submitDescription();
+        }
     });
-} else {
-    alert('Please enter a description!');
-}
-}
-
-// attach click event to the submit button
-document.getElementById('artsubmit-btn').addEventListener('click', submitDescription);
-
-// Add event listener for return key in textarea
-document.getElementById('artdescription').addEventListener('keyup', function(event) {
-if (event.keyCode === 13) {
-    event.preventDefault();
-    submitDescription();
-}
 });

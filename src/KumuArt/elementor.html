@@ -1,0 +1,491 @@
+<!-- No DOCTYPE, html, head tags when embedding in Elementor -->
+<style>
+    /* Stronger wrapper to ensure centering */
+    .art-wrapper {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin: 0 auto !important;
+      padding: 20px 0 !important;
+    }
+    
+    /* Reset some potential Elementor/Wordpress styles */
+    .art-wrapper * {
+      box-sizing: border-box !important;
+    }
+    
+    :root {
+      --primary-color: #74a84a;
+      --primary-dark: #2c541d;
+      --bg-color: #f8f8f8;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e0e0e0;
+    }
+    
+    .art-container {
+      width: 100% !important;
+      max-width: 800px !important;
+      background-color: var(--card-bg) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+      overflow: hidden !important;
+      transition: all 0.3s ease !important;
+      margin: 0 auto !important;
+    }
+    
+    .art-header {
+      padding: 1.5rem 2rem !important;
+      background-color: var(--primary-color) !important;
+      color: white !important;
+      border-bottom: 1px solid var(--border-color) !important;
+      text-align: left !important;
+    }
+    
+    .art-header h2 {
+      font-size: 1.8rem !important;
+      font-weight: 600 !important;
+      margin: 0 !important;
+      color: white !important;
+    }
+    
+    .art-content {
+      padding: 2rem !important;
+    }
+    
+    .input-area {
+      margin-bottom: 0.5rem !important; /* Reduced from 1.5rem */
+    }
+    
+    .textarea-container {
+      position: relative !important;
+      margin-bottom: 0.5rem !important; /* Reduced from 1rem */
+    }
+    
+    #artdescription {
+      width: 100% !important;
+      min-height: 120px !important;
+      padding: 1rem !important;
+      border: 2px solid var(--border-color) !important;
+      border-radius: 8px !important;
+      font-size: 1rem !important;
+      resize: vertical !important;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+      margin-bottom: 0.5rem !important; /* Reduced from 1rem */
+    }
+    
+    #artdescription:focus {
+      outline: none !important;
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 0 3px rgba(116, 168, 74, 0.2) !important;
+    }
+    
+    #artdescription:disabled {
+      background-color: rgba(240, 240, 240, 0.5) !important;
+      cursor: not-allowed !important;
+    }
+    
+    .button-container {
+      margin-bottom: 0.5rem !important; /* Reduced from 2rem */
+      display: flex !important;
+      justify-content: center !important;
+    }
+    
+    #artsubmit-btn {
+      background-color: var(--primary-color) !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 6px !important;
+      padding: 0.75rem 1.5rem !important;
+      font-size: 1rem !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      transition: background-color 0.3s ease, transform 0.2s ease !important;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+      min-width: 120px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+    
+    #artsubmit-btn:hover {
+      background-color: var(--primary-dark) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    #artsubmit-btn:active {
+      transform: translateY(0) !important;
+    }
+    
+    #artsubmit-btn:disabled {
+      opacity: 0.7 !important;
+      cursor: not-allowed !important;
+    }
+    
+    .section-title {
+      font-size: 1.3rem !important;
+      font-weight: 600 !important;
+      color: var(--text-color) !important;
+      margin: 0.5rem 0 0.5rem 0 !important; /* Reduced from 1.5rem 0 1rem 0 */
+      padding-bottom: 0.5rem !important;
+      border-bottom: 2px solid var(--primary-color) !important;
+      display: inline-block !important;
+    }
+    
+    .image-section, .fact-section {
+      margin-top: 0.5rem !important; /* Reduced from 1rem */
+      margin-bottom: 0.5rem !important; /* Reduced from 2rem */
+    }
+    
+    #artimage-container, #artfact-container {
+      background-color: #f9f9f9 !important;
+      border-radius: 8px !important;
+      padding: 1rem !important; /* Reduced from 1.25rem */
+      border: 1px solid var(--border-color) !important;
+      transition: all 0.3s ease !important;
+      min-height: 60px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      flex-direction: column !important;
+    }
+    
+    #artimage {
+      max-width: 100% !important;
+      height: auto !important;
+      border-radius: 4px !important;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    #image-placeholder, #fact-placeholder {
+      color: #888 !important;
+      font-style: italic !important;
+      text-align: center !important;
+      margin: 0.5rem 0 !important; /* Reduced from 1rem */
+    }
+    
+    .markdown-content {
+      width: 100% !important;
+      line-height: 1.6 !important;
+      word-wrap: break-word !important;
+      overflow-wrap: anywhere !important;
+      color: var(--text-color) !important;
+      margin: 0 !important;
+    }
+
+    .markdown-content > :first-child {
+      margin-top: 0 !important;
+    }
+
+    .markdown-content > :last-child {
+      margin-bottom: 0 !important;
+    }
+
+    .markdown-content p,
+    .markdown-content ul,
+    .markdown-content ol,
+    .markdown-content pre,
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3,
+    .markdown-content h4,
+    .markdown-content h5,
+    .markdown-content h6 {
+      margin: 0 0 0.9rem 0 !important;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      padding-left: 1.5rem !important;
+    }
+
+    .markdown-content code {
+      background-color: rgba(44, 84, 29, 0.08) !important;
+      border-radius: 4px !important;
+      padding: 0.1rem 0.35rem !important;
+      font-size: 0.95em !important;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+    }
+
+    .markdown-content a {
+      color: var(--primary-dark) !important;
+      text-decoration: underline !important;
+    }
+
+    #artfact {
+      width: 100% !important;
+      line-height: 1.6 !important;
+      margin: 0 !important;
+      color: var(--text-color) !important;
+    }
+    
+    #artoutput {
+      color: #d9534f !important;
+      margin: 0.25rem 0 !important; /* Reduced from 0.5rem */
+      min-height: 20px !important;
+      text-align: center !important;
+    }
+    
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    
+    @media (max-width: 768px) {
+      .art-wrapper {
+        padding: 1rem !important;
+      }
+      
+      .art-header, .art-content {
+        padding: 1.25rem !important;
+      }
+    }
+</style>
+
+<div class="art-wrapper">
+  <div class="art-container">
+    <div class="art-header">
+      <h2>KumuArt</h2>
+    </div>
+    
+    <div class="art-content">
+      <div class="input-area">
+        <div class="textarea-container">
+          <textarea id="artdescription" placeholder="Enter a description of an image you want to generate."></textarea>
+        </div>
+        
+        <div class="button-container">
+          <button id="artsubmit-btn">Submit</button>
+        </div>
+      </div>
+      
+      <div class="error-message">
+        <p id="artoutput"></p>
+      </div>
+      
+      <div class="image-section">
+        <h3 class="section-title">Image Generated</h3>
+        <div id="artimage-container">
+          <p id="image-placeholder">This is where the image will show up</p>
+          <img id="artimage" style="display: none;">
+        </div>
+      </div>
+      
+      <div class="fact-section">
+        <h3 class="section-title">Fun Fact</h3>
+        <div id="artfact-container">
+          <p id="fact-placeholder">This is where the fun fact will show up</p>
+          <div id="artfact" class="markdown-content" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var loadingInterval;
+    var submitButton = document.getElementById('artsubmit-btn');
+    var descriptionInput = document.getElementById('artdescription');
+    var imageContainer = document.getElementById('artimage-container');
+    var imageElement = document.getElementById('artimage');
+    var outputContainer = document.getElementById('artoutput');
+    var factContainer = document.getElementById('artfact');
+    var imagePlaceholder = document.getElementById('image-placeholder');
+    var factPlaceholder = document.getElementById('fact-placeholder');
+
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderMarkdown(markdown) {
+        var normalized = escapeHtml(markdown || '').replace(/\r\n?/g, '\n').trim();
+        if (!normalized) {
+            return '';
+        }
+
+        function formatInline(text) {
+            var codeSpans = [];
+            var formatted = text.replace(/`([^`]+)`/g, function(_, code) {
+                codeSpans.push(code);
+                return '@@CODE' + (codeSpans.length - 1) + '@@';
+            });
+
+            formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+            formatted = formatted.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, '$1<em>$2</em>');
+
+            return formatted.replace(/@@CODE(\d+)@@/g, function(_, index) {
+                return '<code>' + codeSpans[Number(index)] + '</code>';
+            });
+        }
+
+        var lines = normalized.split('\n');
+        var html = [];
+        var paragraphLines = [];
+        var listItems = [];
+        var listType = null;
+
+        function flushParagraph() {
+            if (!paragraphLines.length) {
+                return;
+            }
+            html.push('<p>' + formatInline(paragraphLines.join('<br>')) + '</p>');
+            paragraphLines = [];
+        }
+
+        function flushList() {
+            if (!listItems.length || !listType) {
+                return;
+            }
+            html.push('<' + listType + '>' + listItems.map(function(item) {
+                return '<li>' + formatInline(item) + '</li>';
+            }).join('') + '</' + listType + '>');
+            listItems = [];
+            listType = null;
+        }
+
+        lines.forEach(function(line) {
+            var trimmed = line.trim();
+
+            if (!trimmed) {
+                flushParagraph();
+                flushList();
+                return;
+            }
+
+            var headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+            if (headingMatch) {
+                flushParagraph();
+                flushList();
+                var level = headingMatch[1].length;
+                html.push('<h' + level + '>' + formatInline(headingMatch[2]) + '</h' + level + '>');
+                return;
+            }
+
+            var unorderedMatch = trimmed.match(/^[-*]\s+(.*)$/);
+            if (unorderedMatch) {
+                flushParagraph();
+                if (listType && listType !== 'ul') {
+                    flushList();
+                }
+                listType = 'ul';
+                listItems.push(unorderedMatch[1]);
+                return;
+            }
+
+            var orderedMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+            if (orderedMatch) {
+                flushParagraph();
+                if (listType && listType !== 'ol') {
+                    flushList();
+                }
+                listType = 'ol';
+                listItems.push(orderedMatch[1]);
+                return;
+            }
+
+            flushList();
+            paragraphLines.push(trimmed);
+        });
+
+        flushParagraph();
+        flushList();
+        return html.join('');
+    }
+
+    function startLoadingAnimation() {
+        submitButton.innerHTML = `Loading<span class="loading-dots"></span>`;
+        submitButton.disabled = true;
+    }
+
+    function stopLoadingAnimation() {
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
+    }
+
+    function submitDescription() {
+        var description = descriptionInput.value.trim();
+        
+        if(!description) {
+            outputContainer.innerText = "Please enter a description!";
+            return;
+        }
+        
+        // Clear previous error messages
+        outputContainer.innerText = "";
+        
+        // Disable input during processing
+        descriptionInput.disabled = true;
+        
+        // Start loading animation
+        startLoadingAnimation();
+        
+        // Hide previous results and show placeholders
+        factContainer.innerHTML = "";
+        imageElement.style.display = "none";
+        factContainer.style.display = "none";
+        imagePlaceholder.style.display = "block";
+        factPlaceholder.style.display = "block";
+
+        fetch('https://kumubot.pythonanywhere.com/art', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({description: description})
+        })
+        .then(response => response.json())
+        .then(data => {
+            var imgURL = data.image_url;
+            imageElement.src = imgURL;
+            
+            var funFact = data.fun_fact;
+            factContainer.innerHTML = renderMarkdown(funFact);
+
+            // Show results and hide placeholders
+            imageElement.style.display = "block";
+            factContainer.style.display = "block";
+            imagePlaceholder.style.display = "none";
+            factPlaceholder.style.display = "none";
+            
+            // Re-enable input
+            descriptionInput.disabled = false;
+            stopLoadingAnimation();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            outputContainer.innerText = "Error occurred while generating image.";
+            descriptionInput.disabled = false;
+            stopLoadingAnimation();
+        });
+    }
+
+    // Attach click event to the submit button
+    submitButton.addEventListener('click', submitDescription);
+
+    // Add event listener for return key in textarea
+    descriptionInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault(); // This prevents the new line from being added
+            submitDescription();
+        }
+    });
+});
+</script>

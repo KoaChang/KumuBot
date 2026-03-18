@@ -97,6 +97,54 @@
     background-color: #f5f5f5 !important;
   }
   
+  .markdown-content {
+    line-height: 1.6 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    color: var(--text-color) !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .markdown-content > :first-child {
+    margin-top: 0 !important;
+  }
+
+  .markdown-content > :last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .markdown-content p,
+  .markdown-content ul,
+  .markdown-content ol,
+  .markdown-content pre,
+  .markdown-content h1,
+  .markdown-content h2,
+  .markdown-content h3,
+  .markdown-content h4,
+  .markdown-content h5,
+  .markdown-content h6 {
+    margin: 0 0 0.9rem 0 !important;
+  }
+
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 1.5rem !important;
+  }
+
+  .markdown-content code {
+    background-color: rgba(44, 84, 29, 0.08) !important;
+    border-radius: 4px !important;
+    padding: 0.1rem 0.35rem !important;
+    font-size: 0.95em !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  }
+
+  .markdown-content a {
+    color: var(--primary-dark) !important;
+    text-decoration: underline !important;
+  }
+
   #dicresponse {
     line-height: 1.6 !important;
     word-wrap: break-word !important;

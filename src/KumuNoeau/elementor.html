@@ -1,0 +1,470 @@
+<!-- No DOCTYPE, html, head tags when embedding in Elementor -->
+<style>
+    /* Stronger wrapper to ensure centering */
+    .noeau-wrapper {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin: 0 auto !important;
+      padding: 20px 0 !important;
+    }
+    
+    /* Reset some potential Elementor/Wordpress styles */
+    .noeau-wrapper * {
+      box-sizing: border-box !important;
+    }
+    
+    :root {
+      --primary-color: #74a84a;
+      --primary-dark: #2c541d;
+      --bg-color: #f8f8f8;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-color: #e0e0e0;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    /* Remove body styles as they won't work in Elementor */
+    /* Instead, these styles are applied to our wrapper div */
+    
+    .noeau-container {
+      width: 100% !important;
+      max-width: 800px !important;
+      background-color: var(--card-bg) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+      overflow: hidden !important;
+      transition: all 0.3s ease !important;
+      margin: 0 auto !important;
+    }
+    
+    .noeau-header {
+      padding: 1.5rem 2rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    
+    .noeau-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: white; /* Ensure text is white */
+    }
+    
+    .noeau-content {
+      padding: 2rem;
+    }
+    
+    .input-area {
+      margin-bottom: 1.5rem;
+    }
+    
+    .textarea-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    
+    #noeauuserInput {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    #noeauuserInput:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(116, 168, 74, 0.2);
+    }
+    
+    #noeauuserInput:disabled {
+      background-color: rgba(240, 240, 240, 0.5);
+      cursor: not-allowed;
+    }
+    
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+    }
+    
+    #generateCheckbox {
+      margin-right: 0.5rem;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+    
+    .checkbox-label {
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    #checkboxDescription {
+      margin-top: 0.25rem;
+      font-size: 0.9rem;
+      color: #666;
+      margin-left: 1.65rem;
+    }
+    
+    .response-area {
+      margin-top: 1.5rem;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 1.25rem;
+      border-left: 4px solid var(--primary-color);
+      transition: all 0.3s ease;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .response-area.empty {
+      border-left-color: var(--border-color);
+      background-color: #f5f5f5;
+    }
+    
+    .response-label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+    }
+    
+    .markdown-content {
+      width: 100%;
+      line-height: 1.6;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      color: var(--text-color);
+    }
+
+    .markdown-content > :first-child {
+      margin-top: 0;
+    }
+
+    .markdown-content > :last-child {
+      margin-bottom: 0;
+    }
+
+    .markdown-content p,
+    .markdown-content ul,
+    .markdown-content ol,
+    .markdown-content pre,
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3,
+    .markdown-content h4,
+    .markdown-content h5,
+    .markdown-content h6 {
+      margin: 0 0 0.9rem 0;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      padding-left: 1.5rem;
+    }
+
+    .markdown-content code {
+      background-color: rgba(44, 84, 29, 0.08);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-size: 0.95em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .markdown-content a {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    #noeauserverResponse {
+      line-height: 1.6;
+      word-wrap: break-word;
+      color: var(--text-color);
+    }
+    
+    .button-container {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    #noeausubmitButton {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      min-width: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #noeausubmitButton:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    #noeausubmitButton:active {
+      transform: translateY(0);
+    }
+    
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    
+    @media (max-width: 768px) {
+      .noeau-wrapper {
+        padding: 1rem !important;
+      }
+      
+      .noeau-header, .noeau-content {
+        padding: 1.25rem !important;
+      }
+    }
+  </style>
+
+<div class="noeau-wrapper">
+  <div class="noeau-container">
+    <div class="noeau-header">
+      <h2>Kumu Noʻeau</h2>
+    </div>
+    
+    <div class="noeau-content">
+      <form id="oleloForm">
+        <div class="input-area">
+          <div class="textarea-container">
+            <textarea id="noeauuserInput" placeholder="Enter a subject for KumuNoʻeau to write about" required></textarea>
+          </div>
+          
+          <div class="checkbox-container">
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="generateCheckbox">
+              <label for="generateCheckbox" class="checkbox-label">Generate new ʻŌlelo Noʻeau</label>
+            </div>
+          </div>
+          <p id="checkboxDescription"></p>
+        </div>
+        
+        <div class="response-area empty">
+          <div class="response-label">Response:</div>
+          <div id="noeauserverResponse" class="markdown-content"></div>
+        </div>
+        
+        <div class="button-container">
+          <button type="submit" id="noeausubmitButton">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderMarkdown(markdown) {
+      var normalized = escapeHtml(markdown || '').replace(/\r\n?/g, '\n').trim();
+      if (!normalized) {
+        return '';
+      }
+
+      function formatInline(text) {
+        var codeSpans = [];
+        var formatted = text.replace(/`([^`]+)`/g, function(_, code) {
+          codeSpans.push(code);
+          return '@@CODE' + (codeSpans.length - 1) + '@@';
+        });
+
+        formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+        formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        formatted = formatted.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+        formatted = formatted.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+        formatted = formatted.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, '$1<em>$2</em>');
+
+        return formatted.replace(/@@CODE(\d+)@@/g, function(_, index) {
+          return '<code>' + codeSpans[Number(index)] + '</code>';
+        });
+      }
+
+      var lines = normalized.split('\n');
+      var html = [];
+      var paragraphLines = [];
+      var listItems = [];
+      var listType = null;
+
+      function flushParagraph() {
+        if (!paragraphLines.length) {
+          return;
+        }
+        html.push('<p>' + formatInline(paragraphLines.join('<br>')) + '</p>');
+        paragraphLines = [];
+      }
+
+      function flushList() {
+        if (!listItems.length || !listType) {
+          return;
+        }
+        html.push('<' + listType + '>' + listItems.map(function(item) {
+          return '<li>' + formatInline(item) + '</li>';
+        }).join('') + '</' + listType + '>');
+        listItems = [];
+        listType = null;
+      }
+
+      lines.forEach(function(line) {
+        var trimmed = line.trim();
+
+        if (!trimmed) {
+          flushParagraph();
+          flushList();
+          return;
+        }
+
+        var headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+        if (headingMatch) {
+          flushParagraph();
+          flushList();
+          var level = headingMatch[1].length;
+          html.push('<h' + level + '>' + formatInline(headingMatch[2]) + '</h' + level + '>');
+          return;
+        }
+
+        var unorderedMatch = trimmed.match(/^[-*]\s+(.*)$/);
+        if (unorderedMatch) {
+          flushParagraph();
+          if (listType && listType !== 'ul') {
+            flushList();
+          }
+          listType = 'ul';
+          listItems.push(unorderedMatch[1]);
+          return;
+        }
+
+        var orderedMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+        if (orderedMatch) {
+          flushParagraph();
+          if (listType && listType !== 'ol') {
+            flushList();
+          }
+          listType = 'ol';
+          listItems.push(orderedMatch[1]);
+          return;
+        }
+
+        flushList();
+        paragraphLines.push(trimmed);
+      });
+
+      flushParagraph();
+      flushList();
+      return html.join('');
+    }
+
+    // This event listener watches for the "Enter" keydown event in the `textarea`
+    document.getElementById("noeauuserInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+          event.preventDefault();
+          document.getElementById("oleloForm").dispatchEvent(new Event('submit'));
+      }
+    });
+    
+    document.getElementById("oleloForm").addEventListener("submit", function(event){
+      event.preventDefault();
+      
+      // Disable the textarea input
+      let userInputElement = document.getElementById("noeauuserInput");
+      userInputElement.disabled = true;
+      
+      let userInput = userInputElement.value;
+      // Get the checkbox's state
+      let generateNew = document.getElementById("generateCheckbox").checked;
+      let button = document.getElementById("noeausubmitButton");
+      let originalButtonText = button.innerText;
+      
+      // Update loading state visually
+      button.innerHTML = `Loading<span class="loading-dots"></span>`;
+      button.disabled = true;
+      
+      // Show response area as active
+      document.querySelector('.response-area').classList.remove('empty');
+      
+      fetch('https://kumubot.pythonanywhere.com/noeau', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userInput, generateNew }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("noeauserverResponse").innerHTML = renderMarkdown(data.message);
+        
+        // Re-enable the textarea input and restore the button text
+        userInputElement.disabled = false;
+        button.innerHTML = originalButtonText;
+        button.disabled = false;
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        
+        // Re-enable the textarea input in case of error and restore the button text
+        userInputElement.disabled = false;
+        button.innerHTML = originalButtonText;
+        button.disabled = false;
+        document.getElementById("noeauserverResponse").innerHTML = renderMarkdown("An error occurred. Please try again.");
+      });
+    });
+    
+    // Code to change the description text when checkbox is clicked
+    document.getElementById("generateCheckbox").addEventListener("change", function(){
+      if(this.checked) {
+          document.getElementById("checkboxDescription").innerText = "This makes KumuNoʻeau create its own new ʻŌlelo Noʻeau";
+      } else {
+          document.getElementById("checkboxDescription").innerText = "This makes KumuNoʻeau find existing 'Ōlelo Noʻeau";
+      }
+    });
+    
+    // Initialize the checkbox description when the page loads
+    window.onload = function() {
+      document.getElementById("checkboxDescription").innerText = "This makes KumuNoʻeau find existing 'Ōlelo Noʻeau";
+    };
+  </script>
+</div> <!-- Close the noeau-wrapper -->
