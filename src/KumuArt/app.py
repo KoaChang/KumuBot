@@ -11,6 +11,7 @@ load_dotenv(Path(__file__).resolve().with_name(".env"))
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils import (
+    DEFAULT_CHAT_MODEL,
     log_api_usage,
     get_completion_from_messagesOpen,
     _extract_text_and_usage,
@@ -24,6 +25,10 @@ CORS(
         r"/art": {"origins": ["https://kumubot.com", "https://kumubot.com/kumuart"]},
     },
 )
+
+CHAT_MODEL = DEFAULT_CHAT_MODEL
+IMAGE_MODEL = "gpt-image-1.5"
+IMAGE_QUALITY = "medium"
 
 
 @app.route("/")
@@ -44,8 +49,9 @@ def generate_image():
     )
 
     img = openai_client.images.generate(
-        model="gpt-image-1",
+        model=IMAGE_MODEL,
         prompt=prompt,
+        quality=IMAGE_QUALITY,
         size="1024x1024",
         output_format="webp",
         output_compression=85,
@@ -59,7 +65,7 @@ def generate_image():
         {"role": "user", "content": f"Write a fun fact about the following topic: {description}. Use complete sentences."},
     ]
 
-    fun_fact_resp = get_completion_from_messagesOpen(messages)
+    fun_fact_resp = get_completion_from_messagesOpen(messages, model=CHAT_MODEL)
     fun_fact_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(fun_fact_resp)
 
     log_api_usage("art", prompt_tokens, completion_tokens, total_tokens)
