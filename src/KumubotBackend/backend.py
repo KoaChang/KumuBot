@@ -20,6 +20,12 @@ CORS(app)
 
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+DEFAULT_CHAT_MODEL = "gpt-5.4-mini"
+DEFAULT_CHAT_REASONING_EFFORT = "none"
+DEFAULT_IMAGE_MODEL = "gpt-image-1.5"
+DEFAULT_IMAGE_QUALITY = "medium"
+DEFAULT_ART_IMAGE_COST = 0.034
+
 # ---------------------------
 # HTML sanitizing helper
 # ---------------------------
@@ -58,7 +64,7 @@ def log_api_usage(endpoint_name, prompt, completion, total):
         # Write the current time and the number of tokens used to the log file
         if endpoint_name == "art":
             f.write(
-                f"{formatted_time}. Prompt: {prompt}. Completion: {completion}. Total: {total}. Image Cost: 0.04\n"
+                f"{formatted_time}. Prompt: {prompt}. Completion: {completion}. Total: {total}. Image Cost: {DEFAULT_ART_IMAGE_COST}\n"
             )
         else:
             f.write(
@@ -212,26 +218,26 @@ def _extract_text_and_usage(resp) -> Tuple[str, int, int, int]:
     return (text or "", input_tokens, output_tokens, total_tokens)
 
 # ---------------------------
-# Model wrappers (gpt-5-mini)
+# Model wrappers (gpt-5.4-mini)
 # ---------------------------
 
-def get_completionOpen(prompt: str, model: str = "gpt-5-mini"):
+def get_completionOpen(prompt: str, model: str = DEFAULT_CHAT_MODEL):
     """Simple text prompt -> text response."""
     resp = openai_client.responses.create(
         model=model,
-        reasoning={"effort": "low"},  # Limit reasoning effort
+        reasoning={"effort": DEFAULT_CHAT_REASONING_EFFORT},
         input=[{"role": "user", "content": [{"type": "input_text", "text": prompt}]}],
     )
     return resp
 
 
-def get_completion_from_messagesOpen(messages: List[Dict[str, Any]], model: str = "gpt-5-mini"):
+def get_completion_from_messagesOpen(messages: List[Dict[str, Any]], model: str = DEFAULT_CHAT_MODEL):
     """Full chat history -> text response."""
     instructions, input_msgs = _messages_to_responses_input(messages)
 
     resp = openai_client.responses.create(
         model=model,
-        reasoning={"effort": "low"},  # Limit reasoning effort
+        reasoning={"effort": DEFAULT_CHAT_REASONING_EFFORT},
         instructions=instructions,
         input=input_msgs,
     )
@@ -756,8 +762,8 @@ def openai_agent():
     if not prompt:
         return _json_error("`prompt` is required.")
 
-    model = str(data.get("model") or "gpt-5-mini")
-    reasoning_effort = str(data.get("reasoning_effort") or "low")
+    model = DEFAULT_CHAT_MODEL
+    reasoning_effort = DEFAULT_CHAT_REASONING_EFFORT
     max_turns = _coerce_int(data.get("max_turns"), default=6, minimum=1, maximum=8)
 
     result = _run_openai_agent(prompt, model, reasoning_effort, max_turns)
@@ -786,8 +792,8 @@ def openai_web_search():
     if not query:
         return _json_error("`query` is required.")
 
-    model = str(data.get("model") or "gpt-5")
-    reasoning_effort = str(data.get("reasoning_effort") or "low")
+    model = DEFAULT_CHAT_MODEL
+    reasoning_effort = DEFAULT_CHAT_REASONING_EFFORT
     allowed_domains = [
         str(domain).replace("https://", "").replace("http://", "").strip("/")
         for domain in (data.get("allowed_domains") or [])
@@ -886,8 +892,8 @@ def openai_rag_query():
     if not question:
         return _json_error("`question` is required.")
 
-    model = str(data.get("model") or "gpt-5-mini")
-    reasoning_effort = str(data.get("reasoning_effort") or "low")
+    model = DEFAULT_CHAT_MODEL
+    reasoning_effort = DEFAULT_CHAT_REASONING_EFFORT
     max_num_results = _coerce_int(data.get("max_num_results"), default=4, minimum=1, maximum=10)
 
     response = openai_client.responses.create(
@@ -1023,7 +1029,7 @@ def openai_structured_plan():
 
     project_name = str(data.get("project_name") or "KumuBot")
     audience = str(data.get("audience") or "ChatGPT 26 reviewers")
-    model = str(data.get("model") or "gpt-5-mini")
+    model = DEFAULT_CHAT_MODEL
 
     schema = {
         "type": "object",
@@ -1058,7 +1064,7 @@ def openai_structured_plan():
 
     response = openai_client.responses.create(
         model=model,
-        reasoning={"effort": "low"},
+        reasoning={"effort": DEFAULT_CHAT_REASONING_EFFORT},
         input=(
             f"Create a concise capability plan for the project `{project_name}`. "
             f"The goal is: {goal}. "
@@ -1130,7 +1136,7 @@ def message():
     messages.append({'role': 'user', 'content': current_message})
 
     # Call model
-    response = get_completion_from_messagesOpen(messages)
+    response = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
 
     # Extract text + usage
     text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(response)
@@ -1160,14 +1166,14 @@ def message():
 #         {"role": "user", "content": f"Write a fun fact about the following topic: {description}. Use complete sentences."},
 #     ]
 
-#     # Fun fact via Responses API (gpt-5-mini)
-#     fun_fact_resp = get_completion_from_messagesOpen(messages)
+#     # Fun fact via Responses API (gpt-5.4-mini)
+#     fun_fact_resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
 #     fun_fact_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(fun_fact_resp)
 
 #     log_api_usage("art", prompt_tokens, completion_tokens, total_tokens)
 #     return jsonify({"image_url": image_url, "fun_fact": fun_fact_text})
 
-# gpt-image-1 implementation. Longer and more expensive, but better image generations.
+# GPT Image 1.5 implementation with explicit medium quality output.
 @app.route("/art", methods=["POST"])
 def generate_image():
     description = request.json["description"]
@@ -1177,13 +1183,14 @@ def generate_image():
         f"Generate an image of {description} in the style of Hawaiian culture and art."
     )
 
-    # gpt-image-1 returns base64 (b64_json), not a URL :contentReference[oaicite:1]{index=1}
+    # GPT Image 1.5 returns base64 (b64_json), not a hosted URL.
     img = openai_client.images.generate(
-        model="gpt-image-1",
+        model=DEFAULT_IMAGE_MODEL,
         prompt=prompt,
+        quality=DEFAULT_IMAGE_QUALITY,
         size="1024x1024",
-        output_format="webp",         # smaller payload than png
-        output_compression=85         # 0-100, supported for webp/jpeg :contentReference[oaicite:2]{index=2}
+        output_format="webp",  # Smaller payload than PNG.
+        output_compression=85,
     )
 
     b64 = img.data[0].b64_json
@@ -1195,7 +1202,7 @@ def generate_image():
         {"role": "user", "content": f"Write a fun fact about the following topic: {description}. Use complete sentences."},
     ]
 
-    fun_fact_resp = get_completion_from_messagesOpen(messages)
+    fun_fact_resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
     fun_fact_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(fun_fact_resp)
 
     log_api_usage("art", prompt_tokens, completion_tokens, total_tokens)
@@ -1220,7 +1227,7 @@ def translate():
                                          There should be no Hawaiian text in your output.
                                          Please do not output anything before or after the actual translated text if you are translating. Text: {text}"""},
         ]
-        resp = get_completion_from_messagesOpen(messages)
+        resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
         translated_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
     else:
         messages = [
@@ -1233,7 +1240,7 @@ def translate():
                 Please do not output anything before or after the actual translated text if you are translating.
                 Text: {text}"""},
         ]
-        resp = get_completion_from_messagesOpen(messages)
+        resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
         translated_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
 
     log_api_usage("translate", prompt_tokens, completion_tokens, total_tokens)
@@ -1258,7 +1265,7 @@ def handle_submit():
                                                             Meaning:\
                                                               """},
         ]
-        resp = get_completion_from_messagesOpen(messages)
+        resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
         response_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
     else:
         system = "Your job is to find a Hawaiian proverb about a given subject. The user will input a subject and you must return a Hawaiian proverb about that subject. Include a short description about the proverb. Keep you answers short and succinct. Use your knowledge and memory of all the Hawaiian proverbs you have access to. If there are no Hawaiian proverbs about the topic, then simply ask for a new topic."
@@ -1269,7 +1276,7 @@ def handle_submit():
                                                             Meaning:\
                                                               """},
         ]
-        resp = get_completion_from_messagesOpen(messages)
+        resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
         response_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
 
     log_api_usage("noeau", prompt_tokens, completion_tokens, total_tokens)
@@ -1286,7 +1293,7 @@ def search():
         {"role": "system", "content": f"{system}"},
         {"role": "user", "content": f"What does this Hawaiian word mean: {search_word}."},
     ]
-    resp = get_completion_from_messagesOpen(messages)
+    resp = get_completion_from_messagesOpen(messages, model=DEFAULT_CHAT_MODEL)
     response_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
 
     log_api_usage("dictionary", prompt_tokens, completion_tokens, total_tokens)
