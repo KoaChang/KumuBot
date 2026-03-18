@@ -11,6 +11,7 @@ load_dotenv(Path(__file__).resolve().with_name(".env"))
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils import (
+    DEFAULT_CHAT_MODEL,
     log_api_usage,
     get_completion_from_messagesOpen,
     _extract_text_and_usage
@@ -18,6 +19,8 @@ from utils import (
 
 app = Flask(__name__, static_folder='static')
 CORS(app, resources={r"/noeau": {"origins": ["https://kumubot.com", "https://kumubot.com/kumunoeau"]}})
+
+CHAT_MODEL = DEFAULT_CHAT_MODEL
 
 
 
@@ -41,7 +44,7 @@ def handle_submit():
                                                             Meaning:\
                                                               """},
         ]
-        resp = get_completion_from_messagesOpen(messages)
+        resp = get_completion_from_messagesOpen(messages, model=CHAT_MODEL)
         response_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
     else:
         system = "Your job is to find a Hawaiian proverb about a given subject. The user will input a subject and you must return a Hawaiian proverb about that subject. Include a short description about the proverb. Keep you answers short and succinct. Use your knowledge and memory of all the Hawaiian proverbs you have access to. If there are no Hawaiian proverbs about the topic, then simply ask for a new topic."
@@ -52,7 +55,7 @@ def handle_submit():
                                                             Meaning:\
                                                               """},
         ]
-        resp = get_completion_from_messagesOpen(messages)
+        resp = get_completion_from_messagesOpen(messages, model=CHAT_MODEL)
         response_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
 
     log_api_usage("noeau", prompt_tokens, completion_tokens, total_tokens)
