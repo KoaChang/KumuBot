@@ -21,7 +21,7 @@ CORS(app)
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 DEFAULT_CHAT_MODEL = "gpt-5.4-mini"
-DEFAULT_CHAT_REASONING_EFFORT = "none"
+DEFAULT_CHAT_REASONING_EFFORT = "low"
 DEFAULT_IMAGE_MODEL = "gpt-image-1.5"
 DEFAULT_IMAGE_QUALITY = "medium"
 DEFAULT_ART_IMAGE_COST = 0.034

@@ -11,7 +11,7 @@ import pytz
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 DEFAULT_CHAT_MODEL = "gpt-5.4-mini"
-DEFAULT_CHAT_REASONING_EFFORT = "none"
+DEFAULT_CHAT_REASONING_EFFORT = "low"
 DEFAULT_ART_IMAGE_COST = 0.034
 
 # ---------------------------
