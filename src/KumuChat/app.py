@@ -11,6 +11,7 @@ load_dotenv(Path(__file__).resolve().with_name(".env"))
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils import (
+    DEFAULT_CHAT_MODEL,
     log_api_usage,
     get_completion_from_messagesOpen,
     _extract_text_and_usage,
@@ -24,6 +25,8 @@ CORS(
         r"/chat": {"origins": ["https://kumubot.com", "https://kumubot.com/kumuchat", "http://127.0.0.1:5500"]},
     },
 )
+
+CHAT_MODEL = DEFAULT_CHAT_MODEL
 
 
 @app.route("/")
@@ -62,7 +65,7 @@ def message():
     messages.append({'role': 'user', 'content': current_message})
 
     # Call model
-    response = get_completion_from_messagesOpen(messages)
+    response = get_completion_from_messagesOpen(messages, model=CHAT_MODEL)
 
     # Extract text + usage
     text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(response)
