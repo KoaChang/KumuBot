@@ -10,6 +10,10 @@ import pytz
 # ---------------------------
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+DEFAULT_CHAT_MODEL = "gpt-5.4-mini"
+DEFAULT_CHAT_REASONING_EFFORT = "none"
+DEFAULT_ART_IMAGE_COST = 0.034
+
 # ---------------------------
 # HTML sanitizing helper
 # ---------------------------
@@ -48,7 +52,7 @@ def log_api_usage(endpoint_name, prompt, completion, total):
         # Write the current time and the number of tokens used to the log file
         if endpoint_name == "art":
             f.write(
-                f"{formatted_time}. Prompt: {prompt}. Completion: {completion}. Total: {total}. Image Cost: 0.04\n"
+                f"{formatted_time}. Prompt: {prompt}. Completion: {completion}. Total: {total}. Image Cost: {DEFAULT_ART_IMAGE_COST}\n"
             )
         else:
             f.write(
@@ -199,24 +203,24 @@ def _extract_text_and_usage(resp) -> Tuple[str, int, int, int]:
     return (text or "", input_tokens, output_tokens, total_tokens)
 
 # ---------------------------
-# Model wrappers (gpt-5-mini)
+# Model wrappers (gpt-5.4-mini)
 # ---------------------------
-def get_completionOpen(prompt: str, model: str = "gpt-5-mini"):
+def get_completionOpen(prompt: str, model: str = DEFAULT_CHAT_MODEL):
     """Simple text prompt -> text response."""
     resp = openai_client.responses.create(
         model=model,
-        reasoning={"effort": "low"},  # Limit reasoning effort
+        reasoning={"effort": DEFAULT_CHAT_REASONING_EFFORT},
         input=[{"role": "user", "content": [{"type": "input_text", "text": prompt}]}],
     )
     return resp
 
-def get_completion_from_messagesOpen(messages: List[Dict[str, Any]], model: str = "gpt-5-mini"):
+def get_completion_from_messagesOpen(messages: List[Dict[str, Any]], model: str = DEFAULT_CHAT_MODEL):
     """Full chat history -> text response."""
     instructions, input_msgs = _messages_to_responses_input(messages)
 
     resp = openai_client.responses.create(
         model=model,
-        reasoning={"effort": "low"},  # Limit reasoning effort
+        reasoning={"effort": DEFAULT_CHAT_REASONING_EFFORT},
         instructions=instructions,
         input=input_msgs,
     )
