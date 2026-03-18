@@ -107,10 +107,15 @@ def test_openai_agent_runs_function_call_loop(client, monkeypatch):
     assert payload["answer"].startswith("Lead with the agent")
     assert payload["tool_trace"][0]["tool"] == "get_openai_capability_inventory"
     assert payload["usage"]["total_tokens"] == 40
+    assert payload["model"] == backend.DEFAULT_CHAT_MODEL
+    assert payload["reasoning_effort"] == backend.DEFAULT_CHAT_REASONING_EFFORT
     assert len(captured_calls) == 2
+    assert captured_calls[0]["model"] == backend.DEFAULT_CHAT_MODEL
+    assert captured_calls[0]["reasoning"] == {"effort": backend.DEFAULT_CHAT_REASONING_EFFORT}
 
 
 def test_openai_web_search_returns_citations(client, monkeypatch):
+    captured_calls = []
     search_payload = {
         "output": [
             {
@@ -145,7 +150,7 @@ def test_openai_web_search_returns_citations(client, monkeypatch):
         "openai_client",
         SimpleNamespace(
             responses=SimpleNamespace(
-                create=lambda **kwargs: FakeResponse(
+                create=lambda **kwargs: captured_calls.append(kwargs) or FakeResponse(
                     output_text="Here is the result.",
                     usage=FakeUsage(14, 11),
                     payload=search_payload,
@@ -163,6 +168,10 @@ def test_openai_web_search_returns_citations(client, monkeypatch):
     payload = response.get_json()
     assert payload["citations"] == [{"title": "OpenAI", "url": "https://openai.com"}]
     assert payload["search_actions"][0]["queries"] == ["ChatGPT 26 cohort"]
+    assert payload["model"] == backend.DEFAULT_CHAT_MODEL
+    assert payload["reasoning_effort"] == backend.DEFAULT_CHAT_REASONING_EFFORT
+    assert captured_calls[0]["model"] == backend.DEFAULT_CHAT_MODEL
+    assert captured_calls[0]["reasoning"] == {"effort": backend.DEFAULT_CHAT_REASONING_EFFORT}
 
 
 def test_openai_rag_index_creates_vector_store_and_uploads_files(client, monkeypatch):
@@ -199,6 +208,7 @@ def test_openai_rag_index_creates_vector_store_and_uploads_files(client, monkeyp
 
 
 def test_openai_rag_query_returns_results_and_citations(client, monkeypatch):
+    captured_calls = []
     rag_payload = {
         "output": [
             {
@@ -231,7 +241,7 @@ def test_openai_rag_query_returns_results_and_citations(client, monkeypatch):
         "openai_client",
         SimpleNamespace(
             responses=SimpleNamespace(
-                create=lambda **kwargs: FakeResponse(
+                create=lambda **kwargs: captured_calls.append(kwargs) or FakeResponse(
                     output_text="KumuBot uses OpenAI heavily.",
                     usage=FakeUsage(18, 9),
                     payload=rag_payload,
@@ -250,6 +260,64 @@ def test_openai_rag_query_returns_results_and_citations(client, monkeypatch):
     assert payload["answer"] == "KumuBot uses OpenAI heavily."
     assert payload["citations"] == [{"file_id": "file_1", "filename": "overview.txt"}]
     assert payload["results"][0]["score"] == 0.98
+    assert payload["model"] == backend.DEFAULT_CHAT_MODEL
+    assert payload["reasoning_effort"] == backend.DEFAULT_CHAT_REASONING_EFFORT
+    assert captured_calls[0]["model"] == backend.DEFAULT_CHAT_MODEL
+    assert captured_calls[0]["reasoning"] == {"effort": backend.DEFAULT_CHAT_REASONING_EFFORT}
+
+
+def test_chat_route_uses_gpt_5_4_mini_defaults(client, monkeypatch):
+    captured_calls = []
+
+    def fake_create(**kwargs):
+        captured_calls.append(kwargs)
+        return FakeResponse(output_text="Aloha", usage=FakeUsage(7, 5))
+
+    monkeypatch.setattr(
+        backend,
+        "openai_client",
+        SimpleNamespace(responses=SimpleNamespace(create=fake_create)),
+    )
+
+    response = client.post("/chat", json={"history": [], "hawaiian_output": False, "message": "Tell me about Hawaii."})
+
+    assert response.status_code == 200
+    assert response.get_json() == {"message": "Aloha"}
+    assert captured_calls[0]["model"] == backend.DEFAULT_CHAT_MODEL
+    assert captured_calls[0]["reasoning"] == {"effort": backend.DEFAULT_CHAT_REASONING_EFFORT}
+
+
+def test_art_route_uses_gpt_image_1_5_and_chat_defaults(client, monkeypatch):
+    image_calls = []
+    response_calls = []
+
+    def fake_generate(**kwargs):
+        image_calls.append(kwargs)
+        return SimpleNamespace(data=[SimpleNamespace(b64_json=base64.b64encode(b"fake-webp").decode("ascii"))])
+
+    def fake_create(**kwargs):
+        response_calls.append(kwargs)
+        return FakeResponse(output_text="Fun fact", usage=FakeUsage(4, 6))
+
+    monkeypatch.setattr(
+        backend,
+        "openai_client",
+        SimpleNamespace(
+            images=SimpleNamespace(generate=fake_generate),
+            responses=SimpleNamespace(create=fake_create),
+        ),
+    )
+
+    response = client.post("/art", json={"description": "a canoe on Waikiki beach"})
+
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["fun_fact"] == "Fun fact"
+    assert payload["image_url"].startswith("data:image/webp;base64,")
+    assert image_calls[0]["model"] == backend.DEFAULT_IMAGE_MODEL
+    assert image_calls[0]["quality"] == backend.DEFAULT_IMAGE_QUALITY
+    assert response_calls[0]["model"] == backend.DEFAULT_CHAT_MODEL
+    assert response_calls[0]["reasoning"] == {"effort": backend.DEFAULT_CHAT_REASONING_EFFORT}
 
 
 def test_openai_voice_speech_returns_base64_audio(client, monkeypatch):
