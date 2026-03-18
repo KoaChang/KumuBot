@@ -11,6 +11,7 @@ load_dotenv(Path(__file__).resolve().with_name(".env"))
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils import (
+    DEFAULT_CHAT_MODEL,
     log_api_usage,
     get_completion_from_messagesOpen,
     _extract_text_and_usage
@@ -23,6 +24,8 @@ CORS(
         r"/dictionary": {"origins": ["https://kumubot.com", "https://kumubot.com/kumudictionary"]}
     },
 )
+
+CHAT_MODEL = DEFAULT_CHAT_MODEL
 
 
 @app.route("/")
@@ -43,7 +46,7 @@ def search():
         {"role": "system", "content": f"{system}"},
         {"role": "user", "content": f"What does this Hawaiian word mean: {search_word}."},
     ]
-    resp = get_completion_from_messagesOpen(messages)
+    resp = get_completion_from_messagesOpen(messages, model=CHAT_MODEL)
     response_text, prompt_tokens, completion_tokens, total_tokens = _extract_text_and_usage(resp)
 
     log_api_usage("dictionary", prompt_tokens, completion_tokens, total_tokens)
